@@ -1,1 +1,1 @@
-# multi-channel-campaign-fe
+# Sevo Campaign Manager

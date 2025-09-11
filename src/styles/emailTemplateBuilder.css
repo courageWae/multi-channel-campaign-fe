@@ -1,0 +1,87 @@
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.dashboard-content {
+  flex: 1;
+  overflow: hidden;
+}
+.dashboard-header {
+  padding: 8px 12px;
+  background-color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.email-editor {
+  min-width: 1200px;
+  height: 100%;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding:20px;
+}
+
+.side-bar-tab-item-active{
+  background: #FF7616;
+  color: #fff;
+}
+
+.side-bar-tab-item:hover{
+  background:#FF7616;
+  color: #fff;
+}
+
+.email-editor .email-editor-main .side-bar{
+  width: 280px;
+  min-width: 280px;
+}
+.email-editor .email-editor-main .side-bar .side-bar-tabs{
+  background:#FF9347;
+}
+
+.email-editor .email-editor-main .side-bar .side-bar-content .side-bar-blocks .side-bar-blocks-container{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.email-editor-toolbar {
+  background: #aa1212 !important;
+}
+.dashboard-header-title {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+}
+
+.dashboard-header-subtitle {
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 34px;
+  background-color: #2563eb;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard-header-subtitle:hover {
+  background-color: #3b82f6;
+}
+
+.dashboard-header-feature {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+#preview{
+  height: 100vh;
+}
