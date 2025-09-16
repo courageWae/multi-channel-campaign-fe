@@ -10,9 +10,9 @@ const Benefits = () => {
         <TopTitle>
           <Title>
             <span>
-              <GiEngagementRing className="text-orange-600 text-md font-bold mr-2" />
+              <GiEngagementRing className="mr-2 font-bold text-orange-600 text-md" />
             </span>
-            Benefits of Using Adsevo in the Advertising Industry
+            Benefits of using it in the Advertising Industry
           </Title>
           <Separator />
         </TopTitle>

@@ -10,13 +10,13 @@ const Operations = () => {
             <span>
               <MdManageAccounts className="text-orange-600 text-md font-bold mr-2" />
             </span>
-            Why should I choose Adsevo in my Advertising Business?
+            Why should I choose it in my Advertising Business?
           </Title>
           <Separator />
         </TopTitle>
         <Subtitle>
           <div>
-            <span className="text-orange-600">Adsevo </span>{" "}
+            <span className="text-orange-600">The Platform </span>{" "}
             ensures efficiency and coordination of processes, resources, and
             activities to achieve Industrial goals and improve productivity.
           </div>

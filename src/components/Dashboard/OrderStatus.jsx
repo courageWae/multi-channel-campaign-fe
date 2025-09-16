@@ -108,7 +108,7 @@ const OrderStatus = ({ campaigns }) => {
     <TableContainer>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold">
-          Recent Campaigns (SMS, Email, Voice)
+          Recent Campaigns (SMS, Email)
         </h2>
       </div>
       {campaigns.length === 0 ? (

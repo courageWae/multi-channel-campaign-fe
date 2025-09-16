@@ -275,13 +275,21 @@ import NoPermissionModal from "components/NoPermission";
   };
 
   // ------ USSD LIVE MODE -------
-  const goLiveFunction = async ({ values, id }) =>
-    await axios.post(`${Config.apiUrl}/ussd/live/${id}`, values, {
-      headers: {
-        "Content-Type": "application/json",
-        token: `${user.token}`,
-      },
-    });
+  const goLiveFunction = async ({ id }) => {
+    
+    
+    try {
+      const response = await axios.post(`${Config.apiUrl}/ussd/goLive/${id}`, {}, {
+        headers: {
+          "Content-Type": "application/json",
+          Token: `${user.token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const goLiveSuccess = (data) => {
     // refetch();
@@ -355,7 +363,7 @@ import NoPermissionModal from "components/NoPermission";
           <TopNavbar />
           <Content>
             <ContentHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <HeaderTitle>USSD Surveys</HeaderTitle>
                 {user.type === Config.UserType.ClientUser && (
                   <Button
@@ -397,7 +405,7 @@ import NoPermissionModal from "components/NoPermission";
               </TemplateButton>
             </ButtonGroup>
             <Seperator />
-            <div className="flex items-center justify-between w-full">
+            <div className="flex justify-between items-center w-full">
               <Uploader
                 setSearchValue={setSearchValue}
                 searchValue={searchValue}

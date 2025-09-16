@@ -22,9 +22,10 @@ import LiveButton from "components/LiveButton";
 import Timer from "./Timer";
 import { TbLivePhoto } from "react-icons/tb";
 import { CiShare2 } from "react-icons/ci";
+import { FaChartBar } from "react-icons/fa";
 import { showAlert } from "USSD/utilities/alert_utilities";
-import { toast } from "react-toastify";
-import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Table = ({
   ApiData,
@@ -40,6 +41,7 @@ const Table = ({
   setUssdDetailsModal
 }) => {
   const user = useSelector((state) => state.UserReducer.user);
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [openActionMenu, setOpenActionMenu] = useState(null);
 
@@ -75,28 +77,15 @@ const Table = ({
     setOpenActionMenu(null);
   };
 
-  const goLive = async(item)=>{
+  const goLive = (item) => {
+    setSelectedData(item.id);
+    setOpenActionMenu(false);
+    setGoLiveModel(true);
+  }
 
-    const  response  =  await axios.post(
-      `https://adsevo.net/backend/go-live/${item.id}`,{},
-    {
-      headers:{
-      Authorization:Config.AxiosConfig.headers.token
-    }
-    })
-    if (response?.data?.data){
-      toast.success("it is working")
-    }
-    else(
-      toast.error("An error has occurred")
-    )
-    
-  
-
-    
-    // setSelectedData(item.id)
-    // setOpenActionMenu(false);
-    // setGoLiveModel(true);
+  const viewResponses = (item) => {
+    setOpenActionMenu(false);
+    navigate(`/ussd-survey-responses/${item.id}`);
   }
 
   const getStatus = (status) => {
@@ -154,7 +143,7 @@ const Table = ({
 
   const getId = (item) => {
     return (
-      <span className="inline-flex items-center gap-2 px-4 py-1 bg-green-200 rounded-sm text-black-700">
+      <span className="inline-flex gap-2 items-center px-4 py-1 bg-green-200 rounded-sm text-black-700">
         #{item}
       </span>
     );
@@ -183,6 +172,11 @@ const Table = ({
             <MenuItem onClick={() => handleSurveyDetails(item)}>
               <FaEye className="mr-2 text-gray-700" /> Survey Details
             </MenuItem>
+            {(item.status === 2 || item.status === 4) && (
+              <MenuItem onClick={() => viewResponses(item)}>
+                <FaChartBar className="mr-2 text-gray-700" /> View Responses
+              </MenuItem>
+            )}
             {/* {!expired && ( */}
               <MenuItem onClick={() => assignTestNumbersModal(item)}>
                 <ImMobile className="mr-2 text-gray-700" /> Assign Test Numbers

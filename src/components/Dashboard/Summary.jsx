@@ -7,7 +7,7 @@ const Amount = tw.h3`text-3xl font-bold text-gray-900`;
 const Sales = tw.p`text-lg text-gray-600`;
 const Button = tw.button`mt-5 bg-orange-500 text-white px-4 py-2 rounded text-sm`;
 
-const Summary = ({ totalCampaigns, totalSocialMedia }) => {
+const Summary = ({ totalCampaigns }) => {
   return (
     <SummaryContainer>
       <Title>Dashboard</Title>
@@ -15,13 +15,9 @@ const Summary = ({ totalCampaigns, totalSocialMedia }) => {
       <div className="my-5">
         <Amount>{totalCampaigns}</Amount>
         <p className="text-xs text-gray-600">
-          Current Month Campaigns (SMS, Email, Voice)
+          Current Month Campaigns (SMS, Email)
         </p>
       </div>
-      <Sales>{totalSocialMedia}</Sales>
-      <p className="text-xs text-gray-600">
-        Total Social Media Campaigns (Facebook, Instagram)
-      </p>
       <Button>Last Month Summary</Button>
     </SummaryContainer>
   );

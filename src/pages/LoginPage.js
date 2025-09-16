@@ -173,7 +173,7 @@ const LoginPage = () => {
         <StyledLeftSection>
           <div className="md:mx-4">
             <Link to="/" className="z-10">
-              <Logo src={Images.adsevoLogo} alt="sevo campaign manager" />
+              <Logo src={Images.LogoSevoc} alt="sevo campaign manager" />
             </Link>
             <h2 className="mt-10 mb-2 text-3xl font-bold">
               {isForgetPassword ? "Forgot Password" : "Login"}
@@ -197,7 +197,7 @@ const LoginPage = () => {
                           type="email"
                           name="registeredEmail"
                           placeholder="Enter your registered email"
-                          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded appearance-none text-md focus:outline-none focus:shadow-outline"
+                          className="px-3 py-2 w-full leading-tight text-gray-700 rounded border appearance-none text-md focus:outline-none focus:shadow-outline"
                         />
                         <ErrorMessage
                           name="registeredEmail"
@@ -205,11 +205,11 @@ const LoginPage = () => {
                           className="mt-1 text-xs text-red-500"
                         />
                       </div>
-                      <div className="flex items-center justify-end mb-4">
+                      <div className="flex justify-end items-center mb-4">
                         <button
                           type="button"
                           onClick={handleLoginClick}
-                          className="inline-block text-xs font-bold text-orange-400 align-baseline hover:text-orange-800 "
+                          className="inline-block text-xs font-bold text-orange-400 align-baseline hover:text-orange-800"
                         >
                           Back to Login
                         </button>
@@ -225,7 +225,7 @@ const LoginPage = () => {
                           type="email"
                           name="email"
                           placeholder="Enter your email"
-                          className="w-full px-3 py-2 leading-tight text-gray-700 border rounded appearance-none text-md focus:outline-none focus:shadow-outline"
+                          className="px-3 py-2 w-full leading-tight text-gray-700 rounded border appearance-none text-md focus:outline-none focus:shadow-outline"
                         />
                         <ErrorMessage
                           name="email"
@@ -241,18 +241,18 @@ const LoginPage = () => {
                           type="password"
                           name="password"
                           placeholder="Enter your password"
-                          className="w-full px-3 py-2 mb-3 leading-tight text-gray-700 border rounded appearance-none text-md focus:outline-none focus:shadow-outline"
+                          className="px-3 py-2 mb-3 w-full leading-tight text-gray-700 rounded border appearance-none text-md focus:outline-none focus:shadow-outline"
                         />
                         <ErrorMessage
                           name="password"
                           component="div"
                           className="mt-1 text-xs text-red-500"
                         />
-                        <div className="flex items-center justify-end">
+                        <div className="flex justify-end items-center">
                           <button
                             type="button"
                             onClick={handleForgetPasswordClick}
-                            className="inline-block text-xs font-bold text-orange-400 align-baseline hover:text-orange-800 "
+                            className="inline-block text-xs font-bold text-orange-400 align-baseline hover:text-orange-800"
                           >
                             Forgot Password?
                           </button>
@@ -277,32 +277,32 @@ const LoginPage = () => {
               )}
             </Formik>
 
-            {!isForgetPassword && (
+            {/* {!isForgetPassword && (
               <>
-                <span className="flex items-center justify-center w-full mt-1 mb-4">
-                  <hr className=" border-t-0.5 border-gray-200 w-1/6  mr-2" />
+                <span className="flex justify-center items-center mt-1 mb-4 w-full">
+                  <hr className="mr-2 w-1/6 border-gray-200 border-t-0.5" />
                   <p className="text-sm text-gray-300">OR</p>
-                  <hr className=" border-t-0.5 border-gray-200 w-1/6 ml-2" />
+                  <hr className="ml-2 w-1/6 border-gray-200 border-t-0.5" />
                 </span>
 
                 <StyledButton
-                  className="px-4 py-2 mb-5 text-sm font-normal text-gray-700 bg-white border border-gray-200 rounded"
+                  className="px-4 py-2 mb-5 text-sm font-normal text-gray-700 bg-white rounded border border-gray-200"
                   onClick={handleGoogleLogin}
                 >
-                  <span className="flex items-center justify-center">
-                    <FcGoogle className="mr-2 " /> Sign in with Google
+                  <span className="flex justify-center items-center">
+                    <FcGoogle className="mr-2" /> Sign in with Google
                   </span>
                 </StyledButton>
               </>
-            )}
+            )} */}
           </div>
-          <p className="mt-3.5 text-center text-gray-500 text-xs">
+          {/* <p className="mt-3.5 text-xs text-center text-gray-500">
             © {year} Adsevo, All rights reserved. Powered by
             GWOSEVO.
-          </p>
+          </p> */}
         </StyledLeftSection>
         <StyledRightSection>
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col justify-center items-center">
             <h3 className="text-[27px]">Don't have an account? </h3>
             <Link to="/register" className="underline">
               <p className="!text-[22px] font-medium text-center">

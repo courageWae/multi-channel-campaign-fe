@@ -100,6 +100,7 @@ import TemplateSamplesForm from "components/AdminEmailSamplesBuilder/TemplateSam
 import AdminBuilder from "components/AdminEmailSamplesBuilder/AdminBuilder";
 import UssdSurvey from "pages/Customer/UssdSurvey";
 import UssdSurveyCreation from "pages/Customer/UssdSurveyCreation";
+import UssdSurveyResponses from "pages/Customer/UssdSurveyResponses";
 import USSDBuilder from "components/UssdSurveyBuilder/Builder";
 import MultiChannelMarketing from "pages/MultiChannelMarketing";
 import LoyaltyManagement from "pages/LoyaltyManagement";
@@ -262,7 +263,7 @@ export default function App() {
           {location.pathname !== "/form" &&
             location.pathname !== "/messaging-price" &&
             location.pathname !== "/email-price" && <Sidebar PR={PR} />}
-          <div className="flex-1 ml-56 overflow-y-auto">
+          <div className="overflow-y-auto flex-1 ml-56">
             <Routes>
               {user?.type == Config.UserType.ClientUser && (
                 <>
@@ -355,6 +356,10 @@ export default function App() {
                   <Route
                     path="/ussd-survey-setup"
                     element={<UssdSurveyCreation />}
+                  />
+                  <Route
+                    path="/ussd-survey-responses/:ussdId"
+                    element={<UssdSurveyResponses />}
                   />
                   {/* <Route path="/ussd-survey-preview" element={<ShareablePreview />} /> */}
                   {/* <Route exact path="/ussd-survey-builder" element={<USSDBuilder/>} /> */}

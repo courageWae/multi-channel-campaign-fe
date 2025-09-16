@@ -50,7 +50,7 @@
 //       <NavbarContent>
 
 //         {user.type == Config.UserType.ClientUser && (
-//           <Btn className="flex items-center gap-2 bg-yellow-100 group rounded-2xl">
+//           <Btn className="flex gap-2 items-center bg-yellow-100 rounded-2xl group">
 //             <PulseIcon className="group-hover:text-topBar-purple" />
 //             <span className="pr-2 text-base font-semibold text-slate-800 group-hover:text-topBar-purple">
 //               Usage and Plan
@@ -167,7 +167,6 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
   const [planPage, setPlanPage] = useState(false);
   const [emailCredits, setEmailCredits] = useState(0)
   const [smsCredits, setSmsCredits] = useState(0)
-  const [voiceCredits, setVoiceCredits] = useState(0)
 
 
   useEffect(() => {
@@ -214,7 +213,6 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
         const data = await response.data.leftCredits;
         setEmailCredits(data.email);
         setSmsCredits(data.sms);
-        setVoiceCredits(data.voice);
         
       }catch(error){
         console.log("Error: ", error);
@@ -268,9 +266,6 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
   const handleSmsTopUp = () => {
     navigate("/sms/top-up");
   };
-  const handleVoiceTopUp = () => {
-    navigate("/voice/top-up");
-  };
 
   useEffect(()=>{
     const isPlanPage = ()=>{
@@ -292,7 +287,7 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
       <NavbarContent>
         {user.type === Config.UserType.ClientUser && (
           // <Btn
-          //   className="flex items-center gap-2 bg-yellow-100 group rounded-2xl"
+          //   className="flex gap-2 items-center bg-yellow-100 rounded-2xl group"
           //   onClick={handleOpenModal}
           // >
           //   Usage and Plan
@@ -303,7 +298,7 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
               <Btn
               type="button"
               onClick={handleOpenModal}
-              className="flex items-center gap-2 bg-yellow-100 group rounded-2xl"
+              className="flex gap-2 items-center bg-yellow-100 rounded-2xl group"
             >
               <PulseIcon className="group-hover:text-topBar-purple" />
               <span className="pr-2 text-base font-semibold text-slate-800 group-hover:text-topBar-purple">
@@ -315,7 +310,7 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
           </>
         )}
 
-        <Tooltip title="Help">
+        {/* <Tooltip title="Help">
           <Btn>
             <LuHelpCircle size={20} />
           </Btn>
@@ -324,7 +319,7 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
           <Btn>
             <HiOutlineBell size={20} />
           </Btn>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="Profile & more...">
           <Btn className="group" onClick={toggleDropdown}>
             <UserIcon className="user-icon" />
@@ -376,65 +371,69 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
           <div className="fixed inset-0 z-40 bg-gray-900 bg-opacity-50">
             <ModalContainer
               ref={modalRef}
-              className="bg-white rounded-lg shadow-xl"
+              className="bg-white rounded-lg shadow-xl max-h-[90vh] overflow-y-auto"
             >
-              <ModalHeader className="flex items-center justify-between p-6 border-b border-gray-200">
-                <div>
-                  <Heading className="text-2xl font-bold text-gray-800">
+              <ModalHeader className="flex justify-between items-center p-4 border-b border-gray-200 sm:p-6">
+                <div className="flex-1 min-w-0">
+                  <Heading className="text-xl font-bold text-gray-800 sm:text-2xl">
                     Campaign Usage and Plan
                   </Heading>
-                  <p className="mt-3 text-gray-500 text-md">
+                  <p className="mt-2 text-sm text-gray-500 sm:mt-3 sm:text-md">
                     Don't have enough credit? Upgrade your subscription or
                     top-up Email, SMS, or Voice credits.
                   </p>
                 </div>
                 <CloseButton
                   onClick={handleOpenModal}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="flex-shrink-0 ml-4 text-gray-400 hover:text-gray-600"
                 >
-                  <FaRegTimesCircle size={24} />
+                  <FaRegTimesCircle size={20} className="sm:w-6 sm:h-6" />
                 </CloseButton>
               </ModalHeader>
 
-              <ModalContent className="p-6">
-                {/* Grid updated to grid-cols-5 */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <ModalContent className="p-4 sm:p-6">
+                {/* Responsive Grid */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
                   {/* Email Credit Card */}
-                  <div className="relative p-6 overflow-hidden rounded-lg bg-gradient-to-r from-blue-100 to-blue-300">
-                    <div className="absolute right-[-25%] top-[-25%] h-[150px] w-[150px] bg-gradient-to-r from-blue-200 to-blue-100 rounded-full"></div>
-                    <p className="z-10 text-5xl font-bold text-blue-900">{emailCredits}</p>
-                    <p className="z-10 text-xl font-semibold text-blue-900">
-                      Email Credits
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleEmailTopUp}
-                      className="z-10 flex items-center gap-1 px-5 py-3 mt-4 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-                    >
-                      <CiCirclePlus className="mt-1 text-white text-md" />
-                      <span>Top Up</span>
-                    </button>
+                  <div className="overflow-hidden relative p-4 sm:p-6 bg-gradient-to-r from-blue-100 to-blue-300 rounded-lg min-h-[160px] sm:min-h-[180px]">
+                    <div className="absolute right-[-25%] top-[-25%] h-[120px] w-[120px] sm:h-[150px] sm:w-[150px] bg-gradient-to-r from-blue-200 to-blue-100 rounded-full"></div>
+                    <div className="relative z-10">
+                      <p className="text-3xl font-bold text-blue-900 sm:text-4xl lg:text-5xl">{emailCredits}</p>
+                      <p className="mt-1 text-lg font-semibold text-blue-900 sm:text-xl">
+                        Email Credits
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleEmailTopUp}
+                        className="flex gap-1 items-center px-3 py-2 mt-3 text-sm font-semibold text-white bg-blue-500 rounded-lg sm:px-5 sm:py-3 sm:mt-4 hover:bg-blue-600 sm:text-base"
+                      >
+                        <CiCirclePlus className="text-sm text-white sm:text-md" />
+                        <span>Top Up</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* SMS Credit Card */}
-                  <div className="relative p-6 overflow-hidden rounded-lg bg-gradient-to-r from-yellow-500 to-orange-400">
-                    <div className="absolute right-[-25%] top-[-25%] h-[150px] w-[150px] bg-gradient-to-r from-orange-600 to-yellow-300 rounded-full"></div>
-                    <p className="z-10 text-5xl font-bold text-white">{smsCredits}</p>
-                    <p className="z-10 text-xl font-semibold text-white">
-                      SMS Credits
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleSmsTopUp}
-                      className="z-10 flex items-center gap-2 px-5 py-3 mt-4 font-semibold text-white bg-orange-500 rounded-lg hover:bg-orange-600"
-                    >
-                      <CiCirclePlus className="mt-1 text-white text-md" />
-                      <span>Top Up</span>
-                    </button>
+                  <div className="overflow-hidden relative p-4 sm:p-6 bg-gradient-to-r from-yellow-500 to-orange-400 rounded-lg min-h-[160px] sm:min-h-[180px]">
+                    <div className="absolute right-[-25%] top-[-25%] h-[120px] w-[120px] sm:h-[150px] sm:w-[150px] bg-gradient-to-r from-orange-600 to-yellow-300 rounded-full"></div>
+                    <div className="relative z-10">
+                      <p className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">{smsCredits}</p>
+                      <p className="mt-1 text-lg font-semibold text-white sm:text-xl">
+                        SMS Credits
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleSmsTopUp}
+                        className="flex gap-1 items-center px-3 py-2 mt-3 text-sm font-semibold text-white bg-orange-500 rounded-lg sm:px-5 sm:py-3 sm:mt-4 hover:bg-orange-600 sm:text-base"
+                      >
+                        <CiCirclePlus className="text-sm text-white sm:text-md" />
+                        <span>Top Up</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Telegram Credit Card */}
-                  {/* <div className="relative p-6 overflow-hidden rounded-lg bg-gradient-to-r from-purple-100 to-purple-500">
+                  {/* <div className="overflow-hidden relative p-6 bg-gradient-to-r from-purple-100 to-purple-500 rounded-lg">
                     <div className="absolute right-[-25%] top-[-25%] h-[150px] w-[150px] bg-gradient-to-r from-purple-200 to-purple-400 rounded-full"></div>
                     <p className="z-10 text-5xl font-bold text-purple-900">0</p>
                     <p className="z-10 text-xl font-semibold text-purple-900">
@@ -443,32 +442,16 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
                     <button
                       type="button"
                       // onClick={handleTelegramTopUp}
-                      className="z-10 flex items-center gap-1 px-5 py-3 mt-4 font-semibold text-white bg-purple-500 rounded-lg hover:bg-purple-600"
+                      className="flex z-10 gap-1 items-center px-5 py-3 mt-4 font-semibold text-white bg-purple-500 rounded-lg hover:bg-purple-600"
                     >
                       <CiCirclePlus className="mt-1 text-white text-md" />
                       <span>Top Up</span>
                     </button>
                   </div> */}
 
-                  {/* Voice Credit Card */}
-                  <div className="relative p-6 overflow-hidden rounded-lg bg-gradient-to-r from-rose-100 to-rose-300">
-                    <div className="absolute right-[-25%] top-[-25%] h-[150px] w-[150px] bg-gradient-to-r from-rose-200 to-rose-100 rounded-full"></div>
-                    <p className="z-10 text-5xl font-bold text-rose-900">{voiceCredits}</p>
-                    <p className="z-10 text-xl font-semibold text-rose-900">
-                      Voice Credits
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleVoiceTopUp}
-                      className="z-10 flex items-center gap-1 px-5 py-3 mt-4 font-semibold text-white rounded-lg bg-rose-500 hover:bg-rose-600"
-                    >
-                      <CiCirclePlus className="mt-1 text-white text-md" />
-                      <span>Top Up</span>
-                    </button>
-                  </div>
 
                   {/* WhatsApp Credit Card */}
-                  {/* <div className="relative p-6 overflow-hidden rounded-lg bg-gradient-to-r from-green-100 to-green-500">
+                  {/* <div className="overflow-hidden relative p-6 bg-gradient-to-r from-green-100 to-green-500 rounded-lg">
                     <div className="absolute right-[-25%] top-[-25%] h-[150px] w-[150px] bg-gradient-to-r from-green-200 to-green-400 rounded-full"></div>
                     <p className="z-10 text-5xl font-bold text-green-900">0</p>
                     <p className="z-10 text-xl font-semibold text-green-900">
@@ -477,7 +460,7 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
                     <button
                       type="button"
                       // onClick={handleWhatsAppTopUp}
-                      className="z-10 flex items-center gap-1 px-5 py-3 mt-4 font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600"
+                      className="flex z-10 gap-1 items-center px-5 py-3 mt-4 font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600"
                     >
                       <CiCirclePlus className="mt-1 text-white text-md" />
                       <span>Top Up</span>
@@ -486,10 +469,10 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
                 </div>
 
                 {/* Plan Details Section */}
-                <div className="p-6 mt-8 rounded-lg bg-gray-50">
-                  <div className="max-w-5xl mx-auto overflow-hidden bg-white rounded-lg shadow-lg lg:flex">
-                    <div className="p-6 lg:w-3/4">
-                      <h3 className="text-2xl font-bold text-gray-800">
+                <div className="p-4 mt-6 bg-gray-50 rounded-lg sm:p-6 sm:mt-8">
+                  <div className="overflow-hidden mx-auto max-w-5xl bg-white rounded-lg shadow-lg lg:flex">
+                    <div className="p-4 sm:p-6 lg:w-3/4">
+                      <h3 className="text-xl font-bold text-gray-800 sm:text-2xl">
                         {subData?.plan_type === Config.Plans.Free ||
                         subData?.plan_type === null
                           ? "Free Plan"
@@ -540,15 +523,15 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
                     </div>
 
                     {/* Pricing Section */}
-                    <div className="flex flex-col justify-center p-6 text-center bg-gray-100 lg:w-1/3">
-                      <div className="flex items-center justify-center text-5xl font-extrabold text-gray-800">
+                    <div className="flex flex-col justify-center p-4 text-center bg-gray-100 sm:p-6 lg:w-1/3">
+                      <div className="flex justify-center items-center text-3xl font-extrabold text-gray-800 sm:text-4xl lg:text-5xl">
                         <span>₵{parseFloat(subData?.amount).toFixed(2)}</span>
-                        <span className="ml-2 text-xl text-gray-500">GHS</span>
+                        <span className="ml-2 text-lg text-gray-500 sm:text-xl">GHS</span>
                       </div>
                       <button
                         type="button"
                         onClick={handlePlanPurchaseRedirect}
-                        className="px-5 py-3 mt-6 font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600"
+                        className="px-4 py-2 mt-4 text-sm font-medium text-white bg-orange-500 rounded-lg sm:px-5 sm:py-3 sm:mt-6 hover:bg-orange-600 sm:text-base"
                       >
                         {subExpired
                           ? "Purchase Subscription"
@@ -568,7 +551,7 @@ const TopNavbar = ({ pageTitle, pageSubtitle }) => {
 };
 
 const NavbarContainer = tw.div`
-    bg-white h-14 px-8 flex justify-between items-center 
+    bg-white h-14 px-8 flex justify-between items-center sticky top-0 z-50
 `;
 const Title = tw.h1`text-xl  text-gray-800 whitespace-nowrap   font-medium`;
 const SubTitle = tw.h1`text-xs  text-gray-500 whitespace-nowrap   `;
@@ -608,7 +591,7 @@ const Triangle = tw.div`
 `;
 
 const ModalContainer = tw.div`
-  absolute top-14 right-20 w-2/3 bg-white border border-gray-200 shadow-lg rounded-lg py-4 px-6 z-20
+  absolute top-14 right-4 sm:right-8 lg:right-20 w-[calc(100vw-2rem)] sm:w-[calc(100vw-4rem)] lg:w-2/3 xl:w-3/4 max-w-6xl bg-white border border-gray-200 shadow-lg rounded-lg py-4 px-6 z-20
 `;
 
 const ModalHeader = tw.div`

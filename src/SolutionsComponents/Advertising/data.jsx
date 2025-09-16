@@ -35,16 +35,16 @@ export const benefits = [
 
 
 export const features = [
-  {
-    title: "Product Launch Campaign",
-    useCase:
-      "Manage a multi-channel product launch campaign for increased awareness and engagement.",
-    mechanics:
-      "Run targeted campaigns on social media platforms (Facebook, Instagram, YouTube, TikTok) and send teaser messages via SMS and Email. Announce the launch to premium clients via Voice Broadcast.",
-    image: Images.religion_img_one,
-    benefit:
-      "Increased awareness, high engagement through personalized content, and multi-platform reach.",
-  },
+  // {
+  //   title: "Product Launch Campaign",
+  //   useCase:
+  //     "Manage a multi-channel product launch campaign for increased awareness and engagement.",
+  //   mechanics:
+  //     "Run targeted campaigns on social media platforms (Facebook, Instagram, YouTube, TikTok) and send teaser messages via SMS and Email. Announce the launch to premium clients via Voice Broadcast.",
+  //   image: Images.religion_img_one,
+  //   benefit:
+  //     "Increased awareness, high engagement through personalized content, and multi-platform reach.",
+  // },
   {
     title: "Event Promotion Campaign",
     useCase:

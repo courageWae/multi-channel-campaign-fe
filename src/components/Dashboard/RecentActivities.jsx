@@ -135,10 +135,10 @@ const socialMediaType = (value) => {
   }
 };
 
-const RecentActivities = ({ socialMedia }) => {
+const RecentActivities = ({ socialMedia = [] }) => {
   return (
     <div className="p-4 bg-white rounded-md shadow-md">
-      <h2 className="mb-4 text-lg font-bold">Recent Social Media Campaigns</h2>
+      <h2 className="mb-4 text-lg font-bold">Recent Activities</h2>
       {socialMedia.length === 0 ? (
         <NotFoundModel />
       ) : (

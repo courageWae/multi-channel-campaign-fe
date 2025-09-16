@@ -12,10 +12,10 @@ const Hero = () => {
                 <Container>
                     <div className="w-full text-left md:w-1/2 lg:text-left">
                         <h1>
-                            <span className="px-8 py-2 text-white rounded-full bg-gradient-to-r from-orange-300 to-orange-500">#Premium Services</span>
+                            <span className="px-8 py-2 text-white bg-gradient-to-r from-orange-300 to-orange-500 rounded-full">#Premium Services</span>
                         </h1>
                         <Title>You’ve got a business,<br /> we have got brilliant<br /> idea for you.</Title>
-                        <Paragraph>At Adsevo, we deliver smart solutions to help your business grow.,<br /> Our expert team is ready to provide the strategies you need to succeed. Let's build your future together.</Paragraph>
+                        <Paragraph>We deliver smart solutions to help your business grow.,<br /> Our expert team is ready to provide the strategies you need to succeed. Let's build your future together.</Paragraph>
                         <Link to="/sales-contact">
                             <Button>Get a Demo</Button>
                         </Link>

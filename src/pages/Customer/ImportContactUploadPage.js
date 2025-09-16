@@ -37,7 +37,14 @@ const ImportContactUploadPage = () => {
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      if (selectedFile.type !== "text/csv") {
+      // Check file extension instead of MIME type for better compatibility
+      const fileName = selectedFile.name.toLowerCase();
+      const isValidCSV = fileName.endsWith('.csv') || 
+                        selectedFile.type === "text/csv" || 
+                        selectedFile.type === "application/csv" ||
+                        selectedFile.type === "application/vnd.ms-excel";
+      
+      if (!isValidCSV) {
         toast.error("Please upload a CSV file.");
         return;
       }
@@ -50,7 +57,14 @@ const ImportContactUploadPage = () => {
     event.preventDefault();
     const droppedFile = event.dataTransfer.files[0];
     if (droppedFile) {
-      if (droppedFile.type !== "text/csv") {
+      // Check file extension instead of MIME type for better compatibility
+      const fileName = droppedFile.name.toLowerCase();
+      const isValidCSV = fileName.endsWith('.csv') || 
+                        droppedFile.type === "text/csv" || 
+                        droppedFile.type === "application/csv" ||
+                        droppedFile.type === "application/vnd.ms-excel";
+      
+      if (!isValidCSV) {
         toast.error("Please upload a CSV file.");
         return;
       }
@@ -66,18 +80,31 @@ const ImportContactUploadPage = () => {
   const readFile = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = XLSX.utils.sheet_to_json(
-        workbook.Sheets[firstSheetName],
-        {
-          header: 1,
+      const text = e.target.result;
+      const lines = text.split('\n');
+      const data = lines.map(line => {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
         }
-      );
-      setFileData(worksheet);
+        result.push(current.trim());
+        return result;
+      }).filter(row => row.some(cell => cell.trim() !== ''));
+      
+      setFileData(data);
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsText(file);
   };
 
 
@@ -96,6 +123,7 @@ const ImportContactUploadPage = () => {
 
     body.append("file", file);
     body.append("groupId", id);
+    
     return await axios.post(`${Config.apiUrl}/addBulkContact`, body, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -106,11 +134,16 @@ const ImportContactUploadPage = () => {
 
   const uploadFileSuccess = (data) => {
     navigate("/contacts");
-    toast.success(data?.data?.msg || "Success");
+    toast.success(data?.data?.msg || "Contacts imported successfully!");
   };
 
-  const uploadFileError = (data) => {
-    toast.error(data?.response?.data?.msg || "An Error Occured");
+  const uploadFileError = (error) => {
+    const errorMessage = error?.response?.data?.msg || 
+                        error?.response?.data?.message || 
+                        error?.message || 
+                        "An error occurred while uploading the file";
+    
+    toast.error(errorMessage);
   };
 
   const { isLoading: uploadFileLoading, mutate: uploadFileEntry } = useMutation(
@@ -122,7 +155,26 @@ const ImportContactUploadPage = () => {
   );
 
   const handleSubmit = (values) => {
-    console.log(values);
+    // Validation checks
+    if (!file) {
+      toast.error("Please select a file first.");
+      return;
+    }
+    
+    if (!fileData || fileData.length < 2) {
+      toast.error("File appears to be empty or invalid. Please check your CSV file.");
+      return;
+    }
+    
+    if (!id) {
+      toast.error("Group ID is missing. Please try again.");
+      return;
+    }
+    
+    if (!user?.token) {
+      toast.error("Authentication token is missing. Please log in again.");
+      return;
+    }
 
     uploadFileEntry({
       file: file,
@@ -138,7 +190,7 @@ const ImportContactUploadPage = () => {
           <TopNavbar />
           <Content className="!gap-0">
             <ContentHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <HeaderTitle>Import contacts from a file</HeaderTitle>
               </div>
               <HeaderSubTitle>
@@ -147,7 +199,7 @@ const ImportContactUploadPage = () => {
                 number of contacts to import.
               </HeaderSubTitle>
               <LearnMoreLink>
-                <Link to="" className="flex items-center gap-1">
+                <Link to="" className="flex gap-1 items-center">
                   <p className="underline hover:text-topBar-purple">
                     Learn more on how to import your contacts to Sevo
                   </p>
@@ -202,6 +254,14 @@ const ImportContactUploadPage = () => {
 
                 {fileData.length > 0 && (
                   <>
+                    <div className="p-4 mb-4 bg-blue-50 rounded-lg">
+                      <h3 className="mb-2 text-lg font-semibold text-blue-800">File Preview</h3>
+                      <p className="text-sm text-blue-600">
+                        Found {fileData.length} rows (including header). 
+                        Showing first 5 rows below:
+                      </p>
+                    </div>
+                    
                     <PreviewTableContainer>
                       <PreviewTable>
                         <thead>
@@ -212,26 +272,30 @@ const ImportContactUploadPage = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {fileData.slice(1).map((row, rowIndex) => (
+                          {fileData.slice(1, 6).map((row, rowIndex) => (
                             <tr
                               key={rowIndex}
                               className="border-b hover:bg-slate-100"
                             >
                               {row.map((cell, cellIndex) => (
-                                <TableCell key={cellIndex}>{cell}</TableCell>
+                                <TableCell key={cellIndex}>
+                                  {cell}
+                                </TableCell>
                               ))}
                             </tr>
                           ))}
                         </tbody>
                       </PreviewTable>
                     </PreviewTableContainer>
+                    
+                    
                     <BtnWrapper>
                       <SubmitBtn onClick={handleSubmit}>Confirm File</SubmitBtn>
                     </BtnWrapper>
                   </>
                 )}
                 <div className="flex items-center mt-4 text-sm">
-                  <FaLock className="w-3 h-3 mr-2" />
+                  <FaLock className="mr-2 w-3 h-3" />
                   <HeaderSubTitle>
                     We don't sell, rent or use your database for any commercial
                     purposes.

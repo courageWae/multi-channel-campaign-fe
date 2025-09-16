@@ -42,7 +42,7 @@ const Navbar = () => {
     <Nav $isScrolled={isScrolled} $isDropdownOpen={isDropdownOpen}>
       <Container $isNavActive={isNavActive}>
         <Link to="/" className="z-10">
-          <Logo src={Images.adsevoLogo} alt="Adsevo logo" />
+          <Logo src={Images.LogoSevoc} alt="Adsevo logo" />
         </Link>
         <MenuIconComp toggleNavbar={toggleNavbar} />
         <NavLinksComp
@@ -128,42 +128,39 @@ const NavLinksComp = ({
         } md:h-auto bg-white`}
       >
         <NavLink
-          className="relative flex justify-between w-full md:w-auto sm:px-0 md:py-0 dropdown-trigger"
+          className="flex relative justify-between w-full md:w-auto sm:px-0 md:py-0 dropdown-trigger"
           onClick={handleFeatureClick}
         >
           Feature
           <RiArrowDropDownLine
             className={`inline-block w-4 h-4 mt-1 transition-transform ${
-              showBookingSubLinks2 ? "rotate-180" : ""
-            }`}
+              showBookingSubLinks2 ? "rotate-180" : ""}`}
           />
         </NavLink>
         <NavLink
-          className="relative flex justify-between w-full md:w-auto sm:px-0 md:py-0 dropdown-trigger"
+          className="flex relative justify-between w-full md:w-auto sm:px-0 md:py-0 dropdown-trigger"
           onClick={handleSolutionsClick}
         >
           Solutions
           <RiArrowDropDownLine
             className={`inline-block w-4 h-4 mt-1 transition-transform ${
-              showBookingSubLinks3 ? "rotate-180" : ""
-            }`}
+              showBookingSubLinks3 ? "rotate-180" : ""}`}
           />
         </NavLink>
         <Link to="/pricing" className="w-full md:w-auto">
-          <NavLink className="relative flex justify-between md:py-0 sm:py-0">
+          <NavLink className="flex relative justify-between md:py-0 sm:py-0">
             Pricing
           </NavLink>
         </Link>
 
         <NavLink
-          className="relative flex justify-between w-full md:w-auto sm:px-0 md:py-0 dropdown-trigger"
+          className="flex relative justify-between w-full md:w-auto sm:px-0 md:py-0 dropdown-trigger"
           onClick={handleResourcesClick}
         >
           Resources
           <RiArrowDropDownLine
             className={`inline-block w-4 h-4 mt-1 transition-transform ${
-              showBookingSubLinks ? "rotate-180" : ""
-            }`}
+              showBookingSubLinks ? "rotate-180" : ""}`}
           />
         </NavLink>
         <Link to="/sales-contact" className="w-full md:w-auto">
@@ -172,12 +169,12 @@ const NavLinksComp = ({
           </NavLink>
         </Link>
         <Link to="/login" className="w-full md:w-auto">
-          <LoginButton className="w-full max-w-xs mx-auto md:w-auto">
+          <LoginButton className="mx-auto w-full max-w-xs md:w-auto">
             Login
           </LoginButton>
         </Link>
         <Link to="/register" className="w-full md:w-auto">
-          <RegisterButton className="w-full max-w-xs mx-auto md:w-auto">
+          <RegisterButton className="mx-auto w-full max-w-xs md:w-auto">
             Register
           </RegisterButton>
         </Link>
@@ -311,14 +308,7 @@ const NavLinksComp = ({
                       to="/multi-channel-marketing"
                     />
                   </li>
-                  <li className="list-none">
-                    <DropdownCard
-                      icon={Images.MsgIcon}
-                      title="Social Media Marketing & Campaign Management"
-                      description="Allows users to easily create and customize campaigns without needing advanced design skills, making campaign creation more accessible."
-                      to="/social-media-marketing"
-                    />
-                  </li>
+                 
                   <li className="list-none">
                     <DropdownCard
                       icon={Images.MsgIcon}
@@ -339,14 +329,7 @@ const NavLinksComp = ({
                       description="Reaching users within their preferred mobile apps with relevant and engaging ads, driving higher engagement rates."
                     />
                   </li>
-                  <li className="list-none">
-                    <DropdownCard
-                      icon={Images.MsgIcon}
-                      title="GEO- Location Campaign Management"
-                      to="/geo-location"
-                      description="Allows marketers to target subscribers based on their physical location or proximity to specific landmarks or areas of interest."
-                    />
-                  </li>
+                
                   <li className="list-none">
                     <DropdownCard
                       icon={Images.MsgIcon}
@@ -394,22 +377,8 @@ const NavLinksComp = ({
                       description="Feedback Collection: Gathers insights directly from target audiences."
                     />
                   </li>
-                  <li className="list-none">
-                    <DropdownCard
-                      icon={Images.MsgIcon}
-                      title="Meetings & Appointments"
-                      to="/meeting-and-appointment"
-                      description="Feedback Collection: Gathers insights directly from target audiences."
-                    />
-                  </li>
-                  {/* <li className="list-none">
-                            <DropdownCard
-                                icon={Images.MsgIcon}
-                                title="Resources (API Integrations, Documentation & Support)"
-                                to="/detail-pages"
-                                description="Feedback Collection: Gathers insights directly from target audiences."
-                            />
-                        </li> */}
+                 
+                  
                 </div>
               </ul>
             </DropdownContent>
@@ -522,7 +491,7 @@ const MenuIconComp = ({ toggleNavbar }) => (
 const DropdownCard = ({ title, description, to, icon }) => (
   <div className="lg:h-[180px] md:h-[220px] w-full cursor-pointer   pt-3 ">
     <Link to={to}>
-      <div className="p-4 transition-colors duration-200 rounded-lg hover:bg-gray-100">
+      <div className="p-4 rounded-lg transition-colors duration-200 hover:bg-gray-100">
         <div className="flex gap-2.5 items-start">
           <StyledIcon src={icon} alt="logo" />
           <h3 className="font-medium text-[15px] text-black-800">{title}</h3>

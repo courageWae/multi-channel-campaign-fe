@@ -141,7 +141,7 @@ const Sidebar = ({ PR }) => {
         />
       )}
       <Header>
-        <Logo src={Images.adLogo} alt="adsevo logo" $isOpen={isOpen} />
+        <Logo src={Images.logosevoc} alt="adsevo logo" $isOpen={isOpen} />
         <ToggleButton onClick={toggleSidebar}>
           <FaBars />
         </ToggleButton>
@@ -201,8 +201,7 @@ const Sidebar = ({ PR }) => {
                 Templates{" "}
                 <RiArrowDropDownLine
                   className={`inline-block  w-4 h-4 transition-transform ${
-                    isChartsOpen ? "rotate-180" : ""
-                  }`}
+                    isChartsOpen ? "rotate-180" : ""}`}
                 />
               </NavText>
               {!isOpen && (
@@ -224,8 +223,7 @@ const Sidebar = ({ PR }) => {
                       Sender Ids{" "}
                       <RiArrowDropDownLine
                         className={`inline-block w-4 h-4 transition-transform ${
-                          isSenderIdOpen ? "rotate-180" : ""
-                        }`}
+                          isSenderIdOpen ? "rotate-180" : ""}`}
                       />
                     </NavText>
                     {!isOpen && (
@@ -324,7 +322,7 @@ const Sidebar = ({ PR }) => {
                   </Link>
                 )}
 
-                <Link to="/whatsapp-template">
+                {/* <Link to="/whatsapp-template">
                   <SubMenuItem
                     $isActive={pathname === "/whatsapp-template"}
                     data-tooltip-id="whatsapp-template-tooltip"
@@ -342,8 +340,8 @@ const Sidebar = ({ PR }) => {
                       </Tooltip>
                     )}
                   </SubMenuItem>
-                </Link>
-                <Link to="/telegram-template">
+                </Link> */}
+                {/* <Link to="/telegram-template">
                   <SubMenuItem
                     $isActive={pathname === "/telegram-template"}
                     data-tooltip-id="telegram-template-tooltip"
@@ -361,7 +359,7 @@ const Sidebar = ({ PR }) => {
                       </Tooltip>
                     )}
                   </SubMenuItem>
-                </Link>
+                </Link> */}
               </SubMenu>
             )}
           </NavItem>
@@ -376,8 +374,7 @@ const Sidebar = ({ PR }) => {
                 Campaign{" "}
                 <RiArrowDropDownLine
                   className={`inline-block w-4 h-4 transition-transform ${
-                    isTablesOpen ? "rotate-180" : ""
-                  }`}
+                    isTablesOpen ? "rotate-180" : ""}`}
                 />
               </NavText>
               {!isOpen && (
@@ -428,7 +425,7 @@ const Sidebar = ({ PR }) => {
                     </SubMenuItem>
                   </Link>
                 )}
-                <Link to="/campaign/voice">
+                {/* <Link to="/campaign/voice">
                   <SubMenuItem
                     $isActive={pathname === "/campaign/voice"}
                     data-tooltip-id="voice-campaign-tooltip"
@@ -446,8 +443,8 @@ const Sidebar = ({ PR }) => {
                       </Tooltip>
                     )}
                   </SubMenuItem>
-                </Link>
-                <Link to="/campaign/whatsapp">
+                </Link> */}
+                {/* <Link to="/campaign/whatsapp">
                   <SubMenuItem
                     $isActive={pathname === "/campaign/whatsapp"}
                     data-tooltip-id="whatsapp-campaign-tooltip"
@@ -465,8 +462,8 @@ const Sidebar = ({ PR }) => {
                       </Tooltip>
                     )}
                   </SubMenuItem>
-                </Link>
-                <Link to="/campaign/telegram">
+                </Link> */}
+                {/* <Link to="/campaign/telegram">
                   <SubMenuItem
                     $isActive={pathname === "/campaign/telegram"}
                     data-tooltip-id="telegram-campaign-tooltip"
@@ -484,13 +481,13 @@ const Sidebar = ({ PR }) => {
                       </Tooltip>
                     )}
                   </SubMenuItem>
-                </Link>
+                </Link> */}
               </SubMenu>
             )}
           </NavItem>
 
           <>
-            <NavItem>
+            {/* <NavItem>
               <NavItemHeader
                 onClick={toggleMedia}
                 data-tooltip-id="social-tooltip"
@@ -501,8 +498,7 @@ const Sidebar = ({ PR }) => {
                   Social Media{" "}
                   <RiArrowDropDownLine
                     className={`inline-block w-4 h-4 transition-transform ${
-                      isMediaOpen ? "rotate-180" : ""
-                    }`}
+                      isMediaOpen ? "rotate-180" : ""}`}
                   />
                 </NavText>
                 {!isOpen && (
@@ -553,7 +549,7 @@ const Sidebar = ({ PR }) => {
                   </Link>
                 </SubMenu>
               )}
-            </NavItem>
+            </NavItem> */}
           </>
 
           {user?.type == Config.UserType.ClientUser && (
@@ -569,8 +565,7 @@ const Sidebar = ({ PR }) => {
                     USSD{" "}
                     <RiArrowDropDownLine
                       className={`inline-block w-4 h-4 transition-transform ${
-                        isUSSDOpen ? "rotate-180" : ""
-                      }`}
+                        isUSSDOpen ? "rotate-180" : ""}`}
                     />
                   </NavText>
                   {!isOpen && (
@@ -641,8 +636,7 @@ const Sidebar = ({ PR }) => {
                       Plan{" "}
                       <RiArrowDropDownLine
                         className={`inline-block w-4 h-4 transition-transform ${
-                          isPlanOpen ? "rotate-180" : ""
-                        }`}
+                          isPlanOpen ? "rotate-180" : ""}`}
                       />
                     </NavText>
                     {!isOpen && (
@@ -727,8 +721,7 @@ const Sidebar = ({ PR }) => {
                     USSD{" "}
                     <RiArrowDropDownLine
                       className={`inline-block w-4 h-4 transition-transform ${
-                        isUSSDOpen ? "rotate-180" : ""
-                      }`}
+                        isUSSDOpen ? "rotate-180" : ""}`}
                     />
                   </NavText>
                   {!isOpen && (
@@ -763,7 +756,7 @@ const Sidebar = ({ PR }) => {
               </NavItem>
             </>
           )}
-          <NavItem>
+          {/* <NavItem>
             <NavItemHeader
               onClick={toggleReport}
               data-tooltip-id="report-tooltip"
@@ -774,8 +767,7 @@ const Sidebar = ({ PR }) => {
                 Reports & Analytics{" "}
                 <RiArrowDropDownLine
                   className={`inline-block w-4 h-4 transition-transform ${
-                    isReportOpen ? "rotate-180" : ""
-                  }`}
+                    isReportOpen ? "rotate-180" : ""}`}
                 />
               </NavText>
               {!isOpen && (
@@ -902,7 +894,7 @@ const Sidebar = ({ PR }) => {
                 </Link>
               </SubMenu>
             )}
-          </NavItem>
+          </NavItem> */}
           {(user?.type == Config.UserType.SuperAdminUser ||
             user?.type == Config.UserType.FinanceAdminUser ||
             user?.type == Config.UserType.CommercialAdminUser) && (

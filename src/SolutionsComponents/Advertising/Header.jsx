@@ -23,7 +23,7 @@ const Header = () => {
             Industry
           </Title>
           <Description>
-            The Adsevo platform is a versatile solution that addresses the
+            The platform is a versatile solution that addresses the
             unique needs of the Advertising Industry,
             driving growth through effective marketing and engagement across
             multiple channels.

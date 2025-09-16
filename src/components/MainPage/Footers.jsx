@@ -42,7 +42,7 @@ const Footers = () => {
                 <GridWrapper>
                     <TextCenterWrapper>
                         <LogoWrapper>
-                            <img src={Images.LogoSevo} alt="TXT Logo" className="inline h-8 mr-2" />
+                            <img src={Images.LogoSevo} alt="TXT Logo" className="inline mr-2 h-8" />
                         </LogoWrapper>
                         <Text>Molestie cras maximus venenatis ipsum mauris ultricies penatibus bibendum semper primis potenti</Text>
                         <SocialLinksWrapper>
@@ -81,14 +81,14 @@ const Footers = () => {
                         </InputWrapper>
                     </SectionWrapper>
                 </GridWrapper>
-                <BottomWrapper>
+                {/* <BottomWrapper>
                     <BottomText>© {year} Sevo Adsevo, All rights reserved. Powered by GWOSEVO.</BottomText>
                     <BottomLinksWrapper>
                         <BottomLink to="#">Terms of use</BottomLink>
                         <BottomLink to="#">Privacy Policy</BottomLink>
                         <BottomLink to="#">Cookie Policy</BottomLink>
                     </BottomLinksWrapper>
-                </BottomWrapper>
+                </BottomWrapper> */}
             </Container>
         </FooterWrapper>
     );

@@ -153,7 +153,7 @@ const RegistrationPage = () => {
             {!showEmailForm && !showGoogleMobilePrompt && (
               <>
                 <StyledButtonEmail
-                  className="flex items-center justify-center px-4 py-2 mb-5 text-sm font-normal text-gray-700 bg-white border border-gray-200 rounded"
+                  className="flex justify-center items-center px-4 py-2 mb-5 text-sm font-normal text-gray-700 bg-white rounded border border-gray-200"
                   onClick={() => {
                     setShowEmailForm(true);
                     setShowGoogleMobilePrompt(false);
@@ -162,22 +162,22 @@ const RegistrationPage = () => {
                   <MdEmail className="mr-2" /> Sign up with Email
                 </StyledButtonEmail>
 
-                <span className="flex items-center justify-center my-5">
-                  <hr className=" border-t-0.5 border-gray-200 w-1/6  mr-2" />
+                {/* <span className="flex justify-center items-center my-5">
+                  <hr className="mr-2 w-1/6 border-gray-200 border-t-0.5" />
                   <p className="text-sm text-gray-300">
                     or Sign up with Google
                   </p>{" "}
-                  <hr className=" border-t-0.5 border-gray-200 w-1/6 ml-2" />
+                  <hr className="ml-2 w-1/6 border-gray-200 border-t-0.5" />
                 </span>
                 <StyledButtonGoogle
-                  className="flex items-center justify-center px-4 py-2 mb-5 text-sm font-normal text-gray-700 bg-white border border-gray-200 rounded"
+                  className="flex justify-center items-center px-4 py-2 mb-5 text-sm font-normal text-gray-700 bg-white rounded border border-gray-200"
                   onClick={() => {
                     setShowEmailForm(false);
                     setShowGoogleMobilePrompt(true);
                   }}
                 >
                   <FcGoogle className="mr-2" /> Sign up with Google
-                </StyledButtonGoogle>
+                </StyledButtonGoogle> */}
               </>
             )}
 
@@ -237,7 +237,7 @@ const RegistrationPage = () => {
                         type="text"
                         name="name"
                         placeholder="Enter your full name"
-                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="px-3 py-2 w-full text-sm leading-tight text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                       />
                       <ErrorMessage
                         name="name"
@@ -253,7 +253,7 @@ const RegistrationPage = () => {
                         type="email"
                         name="email"
                         placeholder="Enter your email"
-                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="px-3 py-2 w-full text-sm leading-tight text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                       />
                       <ErrorMessage
                         name="email"
@@ -269,7 +269,7 @@ const RegistrationPage = () => {
                         type="text"
                         name="mobile"
                         placeholder="Enter your mobile number"
-                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="px-3 py-2 w-full text-sm leading-tight text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                       />
                       <ErrorMessage
                         name="mobile"
@@ -285,7 +285,7 @@ const RegistrationPage = () => {
                         type="password"
                         name="password"
                         placeholder="Enter your password"
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="px-3 py-2 mb-3 w-full text-sm leading-tight text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                       />
                       <ErrorMessage
                         name="password"
@@ -301,7 +301,7 @@ const RegistrationPage = () => {
                         type="password"
                         name="confirmPassword"
                         placeholder="Confirm your password"
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        className="px-3 py-2 mb-3 w-full text-sm leading-tight text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                       />
                       <ErrorMessage
                         name="confirmPassword"
@@ -336,7 +336,7 @@ const RegistrationPage = () => {
                           name={`otp[${index}]`}
                           maxLength="1"
                           required
-                          className="w-12 h-12 text-sm leading-tight text-center text-black text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                          className="w-12 h-12 text-sm leading-tight text-center text-black text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                           innerRef={otpRefs[index]}
                           onChange={(e) => {
                             handleChange(e);
@@ -358,8 +358,8 @@ const RegistrationPage = () => {
             )}
 
             {showGoogleMobilePrompt && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-full p-8 mx-4 bg-white rounded-lg shadow-lg md:w-1/4">
+              <div className="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-50">
+                <div className="p-8 mx-4 w-full bg-white rounded-lg shadow-lg md:w-1/4">
                   <div className="flex justify-end">
                     <button
                       className="text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -403,7 +403,7 @@ const RegistrationPage = () => {
                             type="text"
                             name="mobile"
                             placeholder="Enter your mobile number"
-                            className="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                            className="px-3 py-2 w-full text-sm leading-tight text-gray-700 rounded border shadow appearance-none focus:outline-none focus:shadow-outline"
                           />
                           <ErrorMessage
                             name="mobile"
@@ -425,10 +425,10 @@ const RegistrationPage = () => {
               </div>
             )}
           </div>
-          <p className="flex-shrink-0 mt-5 text-xs text-center text-gray-500">
+          {/* <p className="flex-shrink-0 mt-5 text-xs text-center text-gray-500">
             © {year} Adsevo, All rights reserved. Powered by
             GWOSevo.
-          </p>
+          </p> */}
         </StyledLeftSection>
         <StyledRightSection>
           <h3 className="text-[27px] font-bold">
