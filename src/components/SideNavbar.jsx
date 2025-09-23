@@ -425,7 +425,7 @@ const Sidebar = ({ PR }) => {
                     </SubMenuItem>
                   </Link>
                 )}
-                {/* <Link to="/campaign/voice">
+                <Link to="/campaign/voice">
                   <SubMenuItem
                     $isActive={pathname === "/campaign/voice"}
                     data-tooltip-id="voice-campaign-tooltip"
@@ -443,7 +443,7 @@ const Sidebar = ({ PR }) => {
                       </Tooltip>
                     )}
                   </SubMenuItem>
-                </Link> */}
+                </Link>
                 {/* <Link to="/campaign/whatsapp">
                   <SubMenuItem
                     $isActive={pathname === "/campaign/whatsapp"}

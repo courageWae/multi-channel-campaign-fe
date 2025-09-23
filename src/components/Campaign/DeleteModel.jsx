@@ -9,31 +9,26 @@ import {
 } from "../Styles/InputStyles";
 
 const UploadModel = ({
-    deleteLoading,
     setDeleteModel,
     selectedData,
-    deleteMutate,
+    deleteCampaign,
 }) => {
     console.log(selectedData)
     const DeleteDevice = () => {
-        deleteMutate({ campaignId: selectedData })
+        deleteCampaign(selectedData);
+        setDeleteModel(false);
     };
 
     return (
         <Model width={"w-full max-w-md"} setOpenModel={setDeleteModel} title="Delete Campaign">
-            {deleteLoading && <Loading />}
-            {!deleteLoading && (
-                <>
-                    {/* <Title>Are you sure?</Title> */}
-                    <SubTitle>You are about to delete selected campaign. Deleting campaign is permanent and cannot be undone.</SubTitle>
+            <>
+                <SubTitle>You are about to delete selected campaign. Deleting campaign is permanent and cannot be undone.</SubTitle>
 
-
-                    <div className="w-full flex justify-end space-x-6 mt-8">
-                        <CancelBtn onClick={() => setDeleteModel(false)}>Cancel</CancelBtn>
-                        <ModelDangerBtn onClick={DeleteDevice}> Delete</ModelDangerBtn>
-                    </div>
-                </>
-            )}
+                <div className="w-full flex justify-end space-x-6 mt-8">
+                    <CancelBtn onClick={() => setDeleteModel(false)}>Cancel</CancelBtn>
+                    <ModelDangerBtn onClick={DeleteDevice}> Delete</ModelDangerBtn>
+                </div>
+            </>
         </Model>
     );
 };

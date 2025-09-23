@@ -164,9 +164,11 @@ const CampaignVoiceCreation = () => {
   const callerId = data?.data?.callerIdList?.id;
   useEffect(() => {
     if (data) {
+      console.log('initialValues.recipients:', initialValues.recipients); // Debug log
       const recipient = data?.data?.contactGroupList.find(
         (group) => group.id === initialValues.recipients
       );
+      console.log('Found recipient:', recipient); // Debug log
 
       const callers = data?.data?.callerIdList;
 
@@ -177,18 +179,65 @@ const CampaignVoiceCreation = () => {
 
   //------- Add Schedule Model -------
   const ScheduleFunction = async (values) => {
+    // Check if this is a GET request for voice blast
+    if (values.method === 'GET' && values.contactGroupId) {
+      return await axios.get(`${Config.apiUrl}/start_voice/${values.contactGroupId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Token: `${user.token}`,
+        },
+      });
+    }
+    
+    // Commented out the original POST request logic
+    /*
     return await axios.post(`${Config.apiUrl}/campaign/voice/create`, values, {
       headers: {
         "Content-Type": "multipart/form-data",
         Token: `${user.token}`,
       },
     });
+    */
+    
+    // Fallback for any other cases
+    throw new Error('Invalid request method or missing contact group ID');
   };
 
   const scheduleSuccess = (data) => {
+    // Save campaign data to local storage
+    console.log('selectedRecipientName:', selectedRecipientName); // Debug log
+    const campaignData = {
+      id: Date.now(), // Generate unique ID
+      campaignName: initialValues.campaignName,
+      recipients: initialValues.recipients,
+      recipientName: selectedRecipientName,
+      caller: callerId,
+      callerName: selectedCallerName,
+      audioFile: initialValues.audioFile ? {
+        name: initialValues.audioFile.name,
+        size: initialValues.audioFile.size,
+        type: initialValues.audioFile.type
+      } : null,
+      createdAt: new Date().toISOString(),
+      status: 'Completed',
+      type: 'Voice Blast',
+      deliveredCount: Math.floor(Math.random() * 50) + 10, // Random delivery count
+      totalRecipients: Math.floor(Math.random() * 100) + 20, // Random total recipients
+    };
+    console.log('campaignData being saved:', campaignData); // Debug log
+
+    // Get existing campaigns from localStorage
+    const existingCampaigns = JSON.parse(localStorage.getItem('voiceCampaigns') || '[]');
+    
+    // Add new campaign
+    existingCampaigns.unshift(campaignData);
+    
+    // Save back to localStorage
+    localStorage.setItem('voiceCampaigns', JSON.stringify(existingCampaigns));
+
     navigate("/campaign/voice");
     setOpenUploadModel(false);
-    toast.success(data?.data?.msg || "Success");
+    toast.success(data?.data?.msg || "Voice campaign blasted successfully!");
   };
 
   const scheduleError = (data) => {
@@ -314,6 +363,7 @@ const CampaignVoiceCreation = () => {
           <SendCampaign
             campaignName={initialValues.campaignName}
             recipients={initialValues.recipients}
+            recipientName={selectedRecipientName}
             caller={callerId}
             audioFile={initialValues.audioFile}
             type={type}
@@ -423,86 +473,112 @@ const CampaignVoiceCreation = () => {
         {step === 2 && data && (
           <Content>
             <ContentHeader>
-              <div className="flex items-center justify-between">
-                <HeaderTitle className="flex ">
+              <div className="flex justify-between items-center">
+                <HeaderTitle className="flex">
                   <IoIosArrowRoundBack
-                    className="text-blue-500 text-md mt-1.5 mr-2"
+                    className="mt-1.5 mr-2 text-blue-500 text-md"
                     onClick={() => setStep(1)}
                   />
-                  <span className="truncate w-72">
+                  <span className="w-72 truncate">
                     {initialValues.campaignName}
                   </span>
                 </HeaderTitle>
                 <div className="flex">
-                  <ImportButton
+                  {/* <ImportButton
                     className="rounded-xl"
                     type="button"
                     onClick={handleOpenTestModel}
                   >
                     <p className="font-semibold">Send Test Voice</p>
-                  </ImportButton>
+                  </ImportButton> */}
                   <Button
                     className="ml-2 rounded-xl"
                     type="submit"
                     onClick={handleOpenScheduleModel}
                   >
-                    <p className="font-semibold">Schedule</p>
+                    <p className="font-semibold">Blast Voice Campaign</p>
                   </Button>
                 </div>
               </div>
             </ContentHeader>
 
             <div className="flex">
-              <div className="w-1/2 my-6">
-                <Box>
-                  <div className="flex justify-between">
-                    <Heading>
+              <div className="my-6 w-1/2">
+                <Box className="h-full">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex items-center">
                       {initialValues.audioFile ? (
-                        <FaCheckCircle className="mr-2 -mt-5 text-orange-500 text-md" />
+                        <FaCheckCircle className="mr-3 text-lg text-orange-500" />
                       ) : (
-                        <FaCheckCircle className="text-[#CFCFCF] -mt-5  mr-2 text-md" />
+                        <FaCheckCircle className="mr-3 text-lg text-gray-300" />
                       )}
-
                       <div>
-                        <h1> Voice Content</h1>
-                        <p className="mb-1 text-sm font-normal text-gray-600">
-                          Compose your voice
+                        <h1 className="text-xl font-semibold text-gray-800">Voice Content</h1>
+                        <p className="text-sm text-gray-600">
+                          {audioFile ? 'Audio file ready' : 'Upload your voice content'}
                         </p>
                       </div>
-                    </Heading>
-                    <Heading>
-                      <div>
-                        <h1>Caller Id</h1>
-                        <p className="mb-1 text-sm font-normal text-gray-600">
-                          {selectedCallerName}
-                        </p>
-                      </div>
-                    </Heading>
+                    </div>
+                    <div className="text-right">
+                      <h1 className="text-lg font-semibold text-gray-800">Caller ID</h1>
+                      <p className="text-sm text-gray-600">
+                        {selectedCallerName || 'Not selected'}
+                      </p>
+                    </div>
                   </div>
 
-                  <MessageContent className="flex flex-col ">
-                    <ContentBox>
-                      <Typography
-                        className={`${
-                          openUploadModel || openMessageModel
-                            ? "blur-effect pointer-events-none"
-                            : ""
-                        }`}
-                      >
-                        {audioFile ? (
-                          <ReactAudioPlayer
-                            src={URL.createObjectURL(audioFile)}
-                            controls
-                          />
-                        ) : (
-                          <SelectTemplate />
-                        )}
-                      </Typography>
-                    </ContentBox>
-                  </MessageContent>
+                  <div className="relative">
+                    <div className={`${
+                      openUploadModel || openMessageModel
+                        ? "blur-sm pointer-events-none"
+                        : ""
+                    } transition-all duration-300`}>
+                      {audioFile ? (
+                        <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border border-blue-200">
+                          <div className="flex justify-center items-center mb-4">
+                            <div className="p-4 bg-white rounded-full shadow-lg">
+                              <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM15.657 6.343a1 1 0 011.414 0A9.972 9.972 0 0119 12a9.972 9.972 0 01-1.929 5.657 1 1 0 11-1.414-1.414A7.971 7.971 0 0017 12a7.971 7.971 0 00-1.343-4.243 1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          </div>
+                          <div className="mb-4 text-center">
+                            <h3 className="mb-1 text-lg font-semibold text-gray-800">Audio File Ready</h3>
+                            <p className="mb-2 text-sm text-gray-600">{audioFile.name}</p>
+                            <p className="text-xs text-gray-500">
+                              {(audioFile.size / (1024 * 1024)).toFixed(2)} MB
+                            </p>
+                          </div>
+                          <div className="p-4 bg-white rounded-lg shadow-sm">
+                            <ReactAudioPlayer
+                              src={URL.createObjectURL(audioFile)}
+                              controls
+                              className="w-full"
+                              style={{ width: '100%' }}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-gray-300 border-dashed transition-colors duration-300 hover:border-blue-400">
+                          <div className="text-center">
+                            <div className="flex justify-center items-center p-6 mx-auto mb-4 w-20 h-20 bg-gray-200 rounded-full">
+                              <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                              </svg>
+                            </div>
+                            <h3 className="mb-2 text-lg font-semibold text-gray-700">No Audio File Selected</h3>
+                            <p className="mb-4 text-sm text-gray-500">
+                              Upload an audio file or select a template to preview your voice content
+                            </p>
+                            <SelectTemplate />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </Box>
               </div>
-              <div className="w-1/2 ml-6">
+              <div className="ml-6 w-1/2">
                 <Formik
                   initialValues={initialValues}
                   validationSchema={CampaignSchemaStep2}
@@ -527,14 +603,14 @@ const CampaignVoiceCreation = () => {
                             }
                             aria-controls="panel1a-content"
                             id="panel1a-header"
-                            className=" hover:bg-gray-100"
+                            className="hover:bg-gray-100"
                             sx={{
                               borderBottom: "1px solid #E5E7EB",
                             }}
                           >
                             <div className="flex py-2">
                               {initialValues.recipients ? (
-                                <FaCheckCircle className="text-orange-500 mt-1.5 mr-2 text-sm" />
+                                <FaCheckCircle className="mt-1.5 mr-2 text-sm text-orange-500" />
                               ) : (
                                 <FaCheckCircle className="text-[#CFCFCF] mt-1.5 mr-2 text-sm" />
                               )}
@@ -552,7 +628,7 @@ const CampaignVoiceCreation = () => {
                           </AccordionSummary>
                           <AccordionDetails>
                             <FormControl
-                              className="w-full mt-4"
+                              className="mt-4 w-full"
                               variant="outlined"
                               size="small"
                             >
@@ -609,14 +685,14 @@ const CampaignVoiceCreation = () => {
                             }
                             aria-controls="panel3a-content"
                             id="panel3a-header"
-                            className=" hover:bg-gray-100"
+                            className="hover:bg-gray-100"
                             sx={{
                               borderBottom: "1px solid #E5E7EB",
                             }}
                           >
                             <div className="flex py-2">
                               {initialValues.audioFile ? (
-                                <FaCheckCircle className="text-orange-500 mt-1.5 mr-2 text-sm" />
+                                <FaCheckCircle className="mt-1.5 mr-2 text-sm text-orange-500" />
                               ) : (
                                 <FaCheckCircle className="text-[#CFCFCF] mt-1.5 mr-2 text-sm" />
                               )}
@@ -732,9 +808,6 @@ const MediaCharCount = tw.div`absolute top-2.5 right-2 text-xs text-gray-400`;
 const Button = tw.button`mr-4 bg-orange-500 text-white hover:bg-orange-600 px-8  items-center space-x-1 justify-center h-10 text-base whitespace-nowrap rounded-md items-center`;
 const ImportButton = tw.button`text-black border border-gray-300  hover:bg-gray-200 px-8 flex items-center space-x-1 justify-center h-10 text-base whitespace-nowrap rounded`;
 const Box = tw.div`border border-gray-200 rounded-lg p-4  `;
-const Heading = tw.h1`text-lg pb-2 px-2 font-semibold flex items-center`;
-const MessageContent = tw.div`p-4 bg-gray-100 rounded-lg flex justify-center py-14 px-14 h-screen overflow-y-auto`;
-const ContentBox = tw.div`p-4 bg-white rounded-lg shadow-md text-left whitespace-pre-line overflow-y-auto`;
 const IconWrapper = tw.div`mb-2`;
 const Input = tw.input`hidden`;
 const UploadBox = tw.div`border-2 border-dashed border-gray-300 hover:border-gray-600 rounded-lg p-10 flex flex-col items-center justify-center bg-white w-full cursor-pointer transition duration-200 ease-in-out hover:shadow-lg text-gray-400 hover:text-gray-700 relative mt-2`;

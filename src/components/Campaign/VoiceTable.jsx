@@ -1,119 +1,82 @@
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 import { PrevBtn, NextBtn, PaginationWrapper } from "../Styles/PageStyles";
 import tw from "tailwind-styled-components";
-import { Link } from "react-router-dom";
 import moment from "moment";
 import { PaginationLimit } from "../../Config";
-import { MdDelete, MdArrowBack, MdArrowForward, MdEdit, MdRemoveRedEye } from "react-icons/md";
-import { IoMdMore } from "react-icons/io";
-import useMedia from "use-media";
-import Config from "Config";
-import { useSelector } from "react-redux";
+import { MdArrowBack, MdArrowForward } from "react-icons/md";
 
 const VoiceTable = ({
     ApiData,
-    setSelectedData,
-    setDeleteModel,
-    setViewModel,
-    setOpenActionModel,
 }) => {
-    const user = useSelector((state) => state.UserReducer.user);
-    const isMobile = useMedia({ maxWidth: "768px" });
     const [data, setData] = useState([]);
     const [openActionMenu, setOpenActionMenu] = useState(null);
-
-    const actionTemplate = (id) => {
-        setSelectedData(id);
-        setOpenActionModel(true);
-        setOpenActionMenu(null);
-    };
-
-    const deleteThisDevice = (id) => {
-        setDeleteModel(true);
-        setSelectedData(id);
-
-    };
-    const View = (item) => {
-        setViewModel(true);
-        setSelectedData(item);
-    };
-    const getStatus = (status, is_scheduled) => {
-        if (status == 1 && is_scheduled == 1) {
-            return <span>Schedule</span>;
-        } else if (status == 2) {
-            return <span>Running</span>;
-        } else if (status == 3) {
-            return <span>Sent</span>;
-        } else {
-            return <span>Pending</span>;
-        }
-    };
-    const getName = (item) => {
-        const status = getStatus(item.status, item.is_scheduled);
+    const getStatus = useCallback((status) => {
         return (
-            <><div>
-                {/* <Link to={`/campaign/voice/edit/${item.id}`} className="text-sm font-medium text-gray-900 hover:underline"> */}
-                {item.name}
-                {/* </Link> */}
-                <div className="text-sm text-gray-500">#{item.id} • <span className="font-medium">{status}</span> on {moment(item.updated_at).format('MMMM Do YYYY, h:mm:ss a')}</div><div className="flex space-x-2 mt-1">
-                    {item.status == Config.CampaignStatus.Pending && item.is_scheduled == Config.CampaignStatus.isSchedule && user.type == Config.UserType.ClientUser && (
-                        <><Link to={`/campaign/voice/edit/${item.id}`} className="text-gray-600 hover:text-blue-600 underline">Edit</Link><span className="text-gray-400">•</span></>)}
-                    <button className="text-gray-600 hover:text-blue-600 underline" onClick={() => View(item)}>Preview</button>
-                    {(user.type == Config.UserType.ClientUser &&
-                        (item.status == Config.CampaignStatus.Sent ||
-                            (item.status == Config.CampaignStatus.Pending && item.is_scheduled == Config.CampaignStatus.isSchedule))) && (
-                            <>
-                                <span className="text-gray-400">•</span><button className="text-gray-600 hover:text-blue-600 underline" onClick={() => deleteThisDevice(item.id)}>Delete</button>
-                                <span className="text-gray-400">•</span>
-                            </>
-                        )
-                    }
-                    <Link to={`/campaign/voice/report/${item.id}`} className="text-gray-600 hover:text-blue-600 underline">Report</Link>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                {status || 'Completed'}
+            </span>
+        );
+    }, []);
+
+    const getName = useCallback((item) => {
+        return (
+            <div className="flex flex-col">
+                <div className="text-sm font-medium text-gray-900">
+                    {item.campaignName || "N/A"}
+                </div>
+                <div className="text-xs text-gray-500">
+                    {moment(item.createdAt).format("DD MMM YYYY, HH:mm")}
+                </div>
+                <div className="mt-1">
+                    {getStatus(item.status)}
                 </div>
             </div>
-            </>
         );
-    }
+    }, [getStatus]);
 
-    const getDeliver = (item) => {
+    const getRecipietent = useCallback((item) => {
+        // Debug log to see what we're getting
+        console.log('getRecipietent item:', item);
+        
+        // If recipientName is missing or looks like an ID, try to find the name
+        let displayName = item.recipientName;
+        
+        // If recipientName is missing or looks like a number/ID, show a fallback
+        if (!displayName || displayName === item.recipients || /^\d+$/.test(displayName)) {
+            displayName = 'Contact Group Selected';
+        }
+        
         return (
-            <div className="items-center"><div className="text-sm font-semibold text-orange-500">
-                {item.deliveredCount}
-            </div><div className="text-sm ">
-                    {item.deliveredPercentage} %
-                </div></div>
+            <div className="flex flex-col items-start">
+                <div className="text-sm font-semibold text-gray-900">
+                    {displayName}
+                </div>
+                <div className="text-xs text-gray-500">
+                    Contact Group
+                </div>
+            </div>
         );
-    };
-
-    const getRecipietent = (item) => {
-        return (
-            <div className="items-center"><div className="text-sm font-semibold">
-                {item.recipentCount}
-            </div><div className="text-sm ">
-                    {item.recipentPercentage} %
-                </div></div>
-        );
-    };
+    }, []);
 
     useEffect(() => {
         if (ApiData) {
-            const tempData = ApiData.map((item) => ({
-                name: getName(item),
-                // name: item.name || "N/A",
-                id: item.id,
-                creationDate: moment(item.created_at).format("DD MMM YYYY, HH:mm"),
-                updated_at: moment(item.updated_at).format("DD MMM YYYY, HH:mm"),
-                recipients: getRecipietent(item),
-                delivered: getDeliver(item),
-                status: getStatus(item.status, item.is_scheduled),
-            }));
+            console.log('VoiceTable ApiData:', ApiData); // Debug log
+            const tempData = ApiData.map((item) => {
+                console.log('Processing item:', item); // Debug log
+                return {
+                    name: getName(item),
+                    id: item.id,
+                    creationDate: moment(item.createdAt).format("DD MMM YYYY, HH:mm"),
+                    recipients: getRecipietent(item),
+                    status: item.status,
+                    recipientName: item.recipientName, // Explicitly preserve recipientName
+                    callerName: item.callerName, // Explicitly preserve callerName
+                };
+            });
             setData(tempData);
         }
-    }, [ApiData, openActionMenu]);
+    }, [ApiData, openActionMenu, getName, getRecipietent]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -132,17 +95,21 @@ const VoiceTable = ({
     const columns = React.useMemo(
         () => [
             {
-                Header: "Campaigns",
+                Header: "Campaign Details",
                 accessor: "name",
-
             },
             {
                 Header: "Recipients",
                 accessor: "recipients",
             },
             {
-                Header: "Answered",
-                accessor: "delivered",
+                Header: "Caller ID",
+                accessor: "callerName",
+                Cell: ({ value }) => (
+                    <div className="text-sm text-gray-600">
+                        {value || 'N/A'}
+                    </div>
+                ),
             },
         ],
         []
@@ -152,11 +119,10 @@ const VoiceTable = ({
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
         prepareRow,
         pageOptions,
         page,
-        state: { pageIndex, pageSize },
+        state: { pageIndex },
         previousPage,
         nextPage,
         setPageSize,
@@ -173,7 +139,7 @@ const VoiceTable = ({
 
     useEffect(() => {
         setPageSize(PaginationLimit);
-    }, []);
+    }, [setPageSize]);
 
     return (
         <>
@@ -213,7 +179,7 @@ const VoiceTable = ({
                     })}
                 </Tbody>
             </CustomTable>
-            {ApiData.length != false && (
+            {ApiData.length !== 0 && (
                 <PaginationWrapper>
                     <div className="px-2">
                         Page{" "}

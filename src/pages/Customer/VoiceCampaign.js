@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import tw from "tailwind-styled-components";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TopNavbar from "components/TopNavbar";
 import Images from "../../Images";
-import { useMutation, useQuery } from "react-query";
 import axios from "axios";
 import Config from "../../Config";
-import Loading from "components/Loading";
 import VoiceTable from "components/Campaign/VoiceTable";
 import { PiPlusCircleBold } from "react-icons/pi";
 import {
@@ -15,28 +13,38 @@ import {
   Content,
   ContentHeader,
   HeaderTitle,
-  HeaderSubTitle,
-  LearnMoreLink,
 } from "../../components/Styles/PageStyles";
 import NotFoundModel from "components/NotFoundModel";
-import DeleteModel from "components/Campaign/DeleteModel";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import ViewModel from "components/Campaign/ViewModel";
 import NoPermissionModal from "components/NoPermission";
 
 const VoiceCampaign = () => {
   const user = useSelector((state) => state.UserReducer.user);
-  const [searchType, setSearchType] = useState("STATUS");
+  const [voiceCampaigns, setVoiceCampaigns] = useState([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [openUploadModel, setOpenUploadModel] = useState(false);
-  const [selectedData, setSelectedData] = useState("");
-  const [deleteModel, setDeleteModel] = useState(false);
-  const [gotInitialResp, setGotInitialResp] = useState(false);
-  const [openActionModel, setOpenActionModel] = useState(false);
-  const [filterType, setFilterType] = useState("4");
-  const [viewModel, setViewModel] = useState(false);
-  const navigate = useNavigate();
+
+  // Load campaigns from localStorage
+  useEffect(() => {
+    const campaigns = JSON.parse(localStorage.getItem('voiceCampaigns') || '[]');
+    console.log('Loaded campaigns from localStorage:', campaigns); // Debug log
+    setVoiceCampaigns(campaigns);
+    setFilteredCampaigns(campaigns);
+  }, []);
+
+  // Filter campaigns based on search
+  useEffect(() => {
+    let filtered = voiceCampaigns;
+    
+    if (searchValue) {
+      filtered = filtered.filter(campaign => 
+        campaign.campaignName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        campaign.recipientName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+    
+    setFilteredCampaigns(filtered);
+  }, [searchValue, voiceCampaigns]);
 
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -98,232 +106,62 @@ const VoiceCampaign = () => {
   }, [user, dashboardData]);
 
 
-  // ----- Getting Initial Data ------
-  const fetchFunction = async (values) =>
-    await axios.post(`${Config.apiUrl}/campaign/sms/list`, values, {
-      headers: {
-        "Content-Type": "application/json",
-        Token: `${user.token}`,
-      },
-    });
-
-  const getListSuccess = (data) => {
-    setGotInitialResp(true);
-  };
-  const getListError = (data) => {
-    setGotInitialResp(true);
-  };
-
-  const {
-    isLoading,
-    error,
-    data,
-    mutate: getListMutate,
-  } = useMutation(fetchFunction, {
-    onSuccess: getListSuccess,
-    onError: getListError,
-  });
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      getListMutate({
-        searchValue: searchValue,
-        filterType: filterType,
-        type: Config.CampaignType.Voice,
-      });
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchValue, filterType]);
-
-  useEffect(() => {
-    setSearchValue("");
-  }, [filterType]);
-
   const ChangeHandler = (e) => {
     setSearchValue(e.target.value);
   };
 
-  //------- Delete Group -------
-  const deleteFunction = async (values) =>
-    await axios.post(
-      `${Config.apiUrl}/campaign/sms/delete`,
-      values,
-
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Token: `${user.token}`,
-        },
-      }
-    );
-
-  const deleteSuccess = (data) => {
-    // refetch();
-    getListMutate({
-      searchValue: searchValue,
-      type: Config.CampaignType.Voice,
-    });
-    setSelectedData("");
-    setDeleteModel(false);
-    toast.success(data?.data?.msg || "Success");
-  };
-
-  const deleteError = (data) => {
-    setDeleteModel(false);
-    setSelectedData("");
-    toast.error(data?.response?.data?.msg || "An Error Occured");
-  };
-
-  const { isLoading: deleteLoading, mutate: deleteMutate } = useMutation(
-    deleteFunction,
-    {
-      onSuccess: deleteSuccess,
-      onError: deleteError,
-    }
-  );
-
-  //------- Active/Inactive Template -------
-  const actionFunction = async (values) =>
-    await axios.post(
-      `${Config.apiUrl}/blockContact`,
-      values,
-
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Token: `${user.token}`,
-        },
-      }
-    );
-
-  const actionSuccess = (data) => {
-    getListMutate({
-      searchValue: searchValue,
-    });
-    setSelectedData("");
-    setOpenActionModel(false);
-    toast.success(data?.data?.msg || "Success");
-  };
-
-  const actionError = (data) => {
-    getListMutate({
-      searchValue: searchValue,
-      type: Config.CampaignType.Voice,
-    });
-    setOpenActionModel(false);
-    setSelectedData("");
-    toast.error(data?.response?.data?.msg || "An Error Occured");
-  };
-
-  const { isLoading: actionDeviceLoading, mutate: actionDeviceMutate } =
-    useMutation(actionFunction, {
-      onSuccess: actionSuccess,
-      onError: actionError,
-    });
-
   return (
     <>
       <Container>
-        {/* <Sidebar /> */}
         <Page>
           <TopNavbar />
           <Content>
             <ContentHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <HeaderTitle>Voice Campaign</HeaderTitle>
-                {user.type == Config.UserType.ClientUser && (
-                  <Link to="/campaign/create/voice">
-                    <Button className="rounded-xl" type="button">
-                      <PiPlusCircleBold size={18} />{" "}
-                      <p className="font-semibold">Create</p>
-                    </Button>
-                  </Link>
-                )}
+                <div className="flex gap-2">
+                  {/* <button 
+                    onClick={() => {
+                      localStorage.removeItem('voiceCampaigns');
+                      window.location.reload();
+                    }}
+                    className="px-4 py-2 text-sm text-white bg-red-500 rounded"
+                  >
+                    Clear Data (Debug)
+                  </button> */}
+                  {user.type === Config.UserType.ClientUser && (
+                    <Link to="/campaign/create/voice">
+                      <Button className="rounded-xl" type="button">
+                        <PiPlusCircleBold size={18} />{" "}
+                        <p className="font-semibold">Create</p>
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
             </ContentHeader>
 
-            <ButtonGroup>
-              <TemplateButton
-                isActive={filterType === "4"}
-                onClick={() => setFilterType("4")}
-              >
-                All
-              </TemplateButton>
-              <TemplateButton
-                ml
-                isActive={filterType === "3"}
-                onClick={() => setFilterType("3")}
-              >
-                Sent
-              </TemplateButton>
-              <TemplateButton
-                ml
-                isActive={filterType === "1"}
-                onClick={() => setFilterType("1")}
-              >
-                Scheduled
-              </TemplateButton>
-              <TemplateButton
-                ml
-                isActive={filterType === "2"}
-                onClick={() => setFilterType("2")}
-              >
-                Running
-              </TemplateButton>
-            </ButtonGroup>
-            <Seperator />
-
-            <div className="flex items-center justify-between w-full">
+            <div className="flex justify-between items-center w-full">
               <Uploader
                 setSearchValue={setSearchValue}
                 searchValue={searchValue}
-                searchType={searchType}
-                setSearchType={setSearchType}
                 ChangeHandler={ChangeHandler}
-                setOpenUploadModel={setOpenUploadModel}
               />
             </div>
 
-            {deleteModel && (
-              <DeleteModel
-                setDeleteModel={setDeleteModel}
-                deleteLoading={deleteLoading}
-                selectedData={selectedData}
-                deleteMutate={deleteMutate}
+            {!canCreate && !loading && (
+              <NoPermissionModal isOpen={true} planType={user?.planType} />
+            )}
+
+            <TableWrapper>
+              <VoiceTable
+                ApiData={filteredCampaigns}
               />
-            )}
 
-{
-              !canCreate && !loading && (
-                <NoPermissionModal isOpen={true} planType={user?.planType} />
-              )
-            }
-
-            {viewModel && (
-              <ViewModel
-                setViewModel={setViewModel}
-                selectedData={selectedData}
-              />
-            )}
-
-            {!isLoading && !loading && gotInitialResp && (
-              <TableWrapper>
-                <VoiceTable
-                  ApiData={error ? [] : data?.data?.data}
-                  setSelectedData={setSelectedData}
-                  setDeleteModel={setDeleteModel}
-                  setOpenActionModel={setOpenActionModel}
-                  setViewModel={setViewModel}
-                />
-
-                {(error || data?.data?.data?.length === 0) &&
-                  !isLoading &&
-                  gotInitialResp && <NotFoundModel />}
-              </TableWrapper>
-            )}
-            {(isLoading || !gotInitialResp) && <Loading />}
+              {filteredCampaigns.length === 0 && (
+                <NotFoundModel />
+              )}
+            </TableWrapper>
           </Content>
         </Page>
       </Container>
@@ -336,7 +174,7 @@ const Uploader = ({ searchValue, ChangeHandler }) => {
     <>
       <SearchWrapper>
         <SearchInput>
-          <img src={Images.SearchIcon} />
+          <img src={Images.SearchIcon} alt="Search" />
           <input
             type="text"
             placeholder={`Type in to search...`}
@@ -354,13 +192,4 @@ const TableWrapper = tw.div` border rounded-md `;
 const Button = tw.button`text-white bg-orange-500 hover:bg-orange-600 px-8 flex items-center space-x-1 justify-center h-10 text-base whitespace-nowrap rounded`;
 const SearchWrapper = tw.div`flex items-center w-full max-w-sm ml-auto`;
 const SearchInput = tw.div` field-wrapper relative px-2 gap-2 rounded-xl bg-white h-10 border border-zinc-400 flex items-center overflow-hidden ml-auto`;
-const ButtonGroup = tw.div`flex items-center !gap-0`;
-const TemplateButton = tw.button`
-  px-2 font-semibold relative ${(props) =>
-    props.isActive ? "text-blue-500" : "text-black"}
-  ${(props) => (props.ml ? "ml-2" : "")}
-  after:absolute after:top-11 after:left-0 after:w-full after:h-0.5
-  ${(props) => (props.isActive ? "after:bg-blue-500" : "")}
-`;
-const Seperator = tw.div`w-full h-[0.090rem] bg-gray-200 `;
 export default VoiceCampaign;
