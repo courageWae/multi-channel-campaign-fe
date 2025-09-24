@@ -6,7 +6,7 @@ import tw from "tailwind-styled-components";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useSelector } from "react-redux";
-import SendCampaign from "components/Campaign/SendCampaign";
+import VoiceScheduleModal from "components/Campaign/VoiceScheduleModal";
 
 import {
   Page,
@@ -360,7 +360,7 @@ const CampaignVoiceCreation = () => {
             openUploadModel ? "translate-x-0" : "translate-x-full"
           } fixed h-screen right-0 top-0 transition-all duration-300 ease-in-out bg-white flex items-start rounded-l-2xl overflow-hidden w-1/3 justify-start z-50`}
         >
-          <SendCampaign
+          <VoiceScheduleModal
             campaignName={initialValues.campaignName}
             recipients={initialValues.recipients}
             recipientName={selectedRecipientName}

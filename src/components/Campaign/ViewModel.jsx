@@ -5,10 +5,19 @@ import Model from "../Model";
 import moment from "moment";
 import ReactAudioPlayer from "react-audio-player";
 
-const ViewModel = ({ setViewModel, selectedData, message, audioFile }) => {
+const ViewModel = ({ setViewModel, selectedData, message, audioFile, campaignType }) => {
     console.log(audioFile)
+    
+    // Determine if this is a voice campaign based on presence of audio data or campaign type
+    const isVoiceCampaign = campaignType === 'voice' || selectedData?.voice || audioFile;
+    
     return (
-        <Model width={"w-11/12 max-w-xl"} setOpenModel={setViewModel} title="Message Preview" className="text-2xl font-semibold">
+        <Model 
+            width={"w-11/12 max-w-xl"} 
+            setOpenModel={setViewModel} 
+            title={isVoiceCampaign ? "Voice Message Preview" : "SMS Message Preview"} 
+            className="text-2xl font-semibold"
+        >
             <Wrapper>
                 {/* <Title>{selectedData?.name}</Title> */}
                 <Box>
@@ -16,7 +25,7 @@ const ViewModel = ({ setViewModel, selectedData, message, audioFile }) => {
                         <TextBox>{selectedData?.message || message}</TextBox>)}
                     {/* {(message) && (
                         <TextBox>{message}</TextBox>)} */}
-                    {(selectedData.voice || audioFile) && (
+                    {isVoiceCampaign && (selectedData.voice || audioFile) && (
                         <AudioPreview>
 
                             <AudioContent>

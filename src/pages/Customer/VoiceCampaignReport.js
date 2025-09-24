@@ -108,7 +108,7 @@ const VoiceCampaignReport = () => {
         <Page>
           <TopNavbar />
           {viewModel && (
-            <ViewModel setViewModel={setViewModel} message={message} />
+            <ViewModel setViewModel={setViewModel} message={message} campaignType="voice" />
           )}
           {(isLoading || !gotInitialResp) && <Loading />}
           {(error || data?.data == false) && !isLoading && gotInitialResp && (

@@ -301,6 +301,7 @@ const TelegramCampaign = () => {
               <ViewModel
                 setViewModel={setViewModel}
                 selectedData={selectedData}
+                campaignType="telegram"
               />
             )}
 

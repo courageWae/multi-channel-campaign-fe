@@ -305,6 +305,7 @@ const SMSCampaign = () => {
               <ViewModel
                 setViewModel={setViewModel}
                 selectedData={selectedData}
+                campaignType="sms"
               />
             )}
 

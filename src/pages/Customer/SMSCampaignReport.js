@@ -342,7 +342,7 @@ const SMSCampaignReport = () => {
         <Page>
           <TopNavbar />
           {viewModel && (
-            <ViewModel setViewModel={setViewModel} message={message} selectedData={selectedData ?? {}}/>
+            <ViewModel setViewModel={setViewModel} message={message} selectedData={selectedData ?? {}} campaignType="sms"/>
           )}
           {(isLoading || !gotInitialResp) && <Loading />}
           {(error || data?.data == false) && !isLoading && gotInitialResp && (

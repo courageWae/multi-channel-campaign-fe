@@ -1,8 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import tw from "tailwind-styled-components";
-import { Formik, Form } from "formik";
+import { Formik, Field, Form } from "formik";
 import {
+    InputGroup,
+    FieldWrappers,
+    Label,
     SubmitBtn,
     CancelBtn
 } from "../Styles/InputStyles";
@@ -28,6 +30,7 @@ const SendCampaign = ({
     images,
     postText,
 }) => {
+    const [scheduleLater, setScheduleLater] = useState(false);
     const [defaultDate, setDefaultDate] = useState("");
     const [defaultHours, setDefaultHours] = useState("");
     const [defaultMinutes, setDefaultMinutes] = useState("");
@@ -72,12 +75,13 @@ const SendCampaign = ({
     };
 
     const validationSchema = Yup.object({
-        // Simplified validation since we're not using scheduling anymore
+        date: scheduleLater ? Yup.string().required("Date is required") : Yup.string(),
+        hours: scheduleLater ? Yup.string().required("Hours are required") : Yup.string(),
+        minutes: scheduleLater ? Yup.string().required("Minutes are required") : Yup.string(),
+        ampm: scheduleLater ? Yup.string().required("AM/PM is required") : Yup.string(),
     });
-    
+
     const handleSubmit = (values) => {
-        // Commented out the original POST request logic
-        /*
         const hours24 = values.ampm === "PM" && values.hours !== "12" ?
             String(parseInt(values.hours, 10) + 12) :
             values.ampm === "AM" && values.hours === "12" ? "00" : values.hours;
@@ -93,7 +97,6 @@ const SendCampaign = ({
             campaignId: values.campaignId,
             audioFile: values.audioFile,
             caller: values.caller,
-            isUrl: isAudioUrl(values.audioFile),
             templateUrl: values.selectedTemplateUrl,
             postText: values.postText,
             image: values.image,
@@ -105,74 +108,189 @@ const SendCampaign = ({
         }
 
         ScheduleMutate(scheduleData);
-        */
-
-        // New GET request logic for voice blast
-        if (values.recipients) {
-            // Use the GET endpoint /start_voice/{contact_group_id}
-            const contactGroupId = values.recipients;
-            ScheduleMutate({ contactGroupId, method: 'GET' });
-        } else {
-            console.error('No contact group selected');
-        }
     };
 
     const handleClose = () => {
         setOpenUploadModel(false);
     };
 
+    const generateHourOptions = (selectedDate, selectedAmPm) => {
+        const now = new Date();
+        const currentHours = now.getHours();
+        const hours = currentHours % 12 || 12;
+        const ampm = currentHours >= 12 ? "PM" : "AM";
+
+        return Array.from({ length: 12 }, (_, i) => {
+            const hour = String(i + 1).padStart(2, '0');
+            const disable = selectedDate === defaultDate && (selectedAmPm === ampm && hour < hours);
+            return (
+                <option key={hour} value={hour} disabled={disable}>
+                    {hour}
+                </option>
+            );
+        });
+    };
+
+    const generateMinuteOptions = (selectedDate, selectedHours, selectedAmPm) => {
+        const now = new Date();
+        const currentHours = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const hours = currentHours % 12 || 12;
+        const minutes = currentMinutes % 60;
+        const ampm = currentHours >= 12 ? "PM" : "AM";
+
+        return Array.from({ length: 60 }, (_, i) => {
+            const minute = String(i).padStart(2, '0');
+            const disable = selectedDate === defaultDate &&
+                selectedAmPm === ampm &&
+                ((selectedHours === hours && i < minutes) ||
+                    (selectedAmPm === "AM" && hours === 12 && selectedHours === 12 && i < minutes) ||
+                    (selectedAmPm === "PM" && hours === 12 && selectedHours === 12 && i < minutes));
+            return (
+                <option key={minute} value={minute} disabled={disable}>
+                    {minute}
+                </option>
+            );
+        });
+    };
+
+    const amPmOptions = ["AM", "PM"].map((period) => {
+        const now = new Date();
+        const currentHours = now.getHours();
+        const ampm = currentHours >= 12 ? "PM" : "AM";
+
+        return (
+            <option key={period} value={period} disabled={period === "AM" && ampm === "PM" && defaultDate === initialValues.date}>
+                {period}
+            </option>
+        );
+    });
+
     return (
-        <div className="flex flex-col w-full h-full bg-white">
+        <div className="bg-white w-full h-full flex flex-col">
             <div className="flex items-center justify-between bg-[#06173A] py-10 px-4">
-                <Title className="text-white">Blast Campaign</Title>
+                <Title className="text-white">Schedule</Title>
                 <button onClick={handleClose}>
                     <MdClose color="white" size={24} />
                 </button>
             </div>
             {scheduleLoading && <Loading />}
 
-            <div className="flex flex-col justify-between px-8 pb-4 h-full">
+            <div className="px-8 h-full flex flex-col justify-between pb-4">
                 {!scheduleLoading && (
                     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema} enableReinitialize>
                         {({ errors, touched, setFieldValue, values }) => (
-                            <Form className="flex flex-col justify-between h-full">
+                            <Form className="flex flex-col h-full justify-between">
                                 <Wrapper>
-                                    {/* New confirmation text */}
-                                    <div className="py-8 text-center">
-                                        <div className="p-6 mb-6 bg-blue-50 rounded-lg border border-blue-200">
-                                            <div className="flex justify-center items-center mb-4">
-                                                <div className="p-3 bg-blue-100 rounded-full">
-                                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            <h3 className="mb-2 text-lg font-semibold text-gray-900">Ready to Blast Your Voice Campaign?</h3>
-                                            <p className="mb-4 text-gray-600">
-                                                Your voice campaign will be sent immediately to all recipients in the selected contact group.
-                                            </p>
-                                            <div className="p-4 bg-white rounded-md border border-blue-200">
-                                                <div className="text-sm text-gray-700">
-                                                    <div className="flex justify-between mb-2">
-                                                        <span className="font-medium">Campaign:</span>
-                                                        <span className="text-gray-600">{campaignName}</span>
-                                                    </div>
-                                                    <div className="flex justify-between mb-2">
-                                                        <span className="font-medium">Recipients:</span>
-                                                        <span className="text-gray-600">{recipientName || (recipients ? 'Selected Group' : 'No group selected')}</span>
-                                                    </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="font-medium">Audio File:</span>
-                                                        <span className="text-gray-600">{audioFile ? 'Ready' : 'No file'}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <p className="text-sm text-gray-500">
-                                            Click "Blast Campaign" to proceed with sending your voice campaign immediately.
-                                        </p>
+                                    <Label>When would you like to send the campaign?</Label>
+                                    <div className="flex flex-col items-start space-y-4">
+                                        <Label className="flex space-x-2">
+                                            <Field
+                                                type="radio"
+                                                name="schedule"
+                                                value="now"
+                                                onChange={() => {
+                                                    setFieldValue("schedule", "now");
+                                                    setScheduleLater(false);
+                                                }}
+                                                checked={values.schedule === "now"}
+                                                className="form-radio text-purple-600"
+                                            />
+                                            <span>Now</span>
+                                        </Label>
+
+                                        <Label className="flex space-x-2">
+                                            <Field
+                                                type="radio"
+                                                name="schedule"
+                                                value="later"
+                                                onChange={() => {
+                                                    setFieldValue("schedule", "later");
+                                                    setScheduleLater(true);
+                                                }}
+                                                checked={values.schedule === "later"}
+                                                className="form-radio text-purple-600"
+                                            />
+                                            <span>Later</span>
+                                        </Label>
                                     </div>
+
+                                    {scheduleLater && (
+                                        <div className="flex flex-col gap-4 mx-5">
+                                            <InputGroup>
+                                                <Label htmlFor="date">Date *</Label>
+                                                <FieldWrappers>
+                                                    <Field
+                                                        type="date"
+                                                        name="date"
+                                                        id="date"
+                                                        className="form-input w-full"
+                                                        onChange={(e) => setFieldValue("date", e.target.value)}
+                                                        value={values.date}
+                                                        min={defaultDate}
+                                                    />
+                                                </FieldWrappers>
+                                                {errors.date && touched.date ? (
+                                                    <div className="text-red-500 text-sm mt-1">{errors.date}</div>
+                                                ) : null}
+                                            </InputGroup>
+
+                                            <InputGroup className="w-full">
+                                                <Label htmlFor="hours">Time *</Label>
+                                                <div className="flex gap-4">
+                                                    <FieldWrappers>
+                                                        <Field
+                                                            as="select"
+                                                            name="hours"
+                                                            id="hours"
+                                                            className="form-select w-full"
+                                                            onChange={(e) => setFieldValue("hours", e.target.value)}
+                                                            value={values.hours}
+                                                        >
+                                                            <option value="" label="Select hour" />
+                                                            {generateHourOptions(values.date, values.ampm)}
+                                                        </Field>
+                                                    </FieldWrappers>
+                                                    {errors.hours && touched.hours ? (
+                                                        <div className="text-red-500 text-sm mt-1">{errors.hours}</div>
+                                                    ) : null}
+
+                                                    <FieldWrappers>
+                                                        <Field
+                                                            as="select"
+                                                            name="minutes"
+                                                            id="minutes"
+                                                            className="form-select w-full"
+                                                            onChange={(e) => setFieldValue("minutes", e.target.value)}
+                                                            value={values.minutes}
+                                                        >
+                                                            <option value="" label="Select minutes" />
+                                                            {generateMinuteOptions(values.date, values.hours, values.ampm)}
+                                                        </Field>
+                                                    </FieldWrappers>
+                                                    {errors.minutes && touched.minutes ? (
+                                                        <div className="text-red-500 text-sm mt-1">{errors.minutes}</div>
+                                                    ) : null}
+
+                                                    <FieldWrappers>
+                                                        <Field
+                                                            as="select"
+                                                            name="ampm"
+                                                            id="ampm"
+                                                            className="form-select w-full"
+                                                            onChange={(e) => setFieldValue("ampm", e.target.value)}
+                                                            value={values.ampm}
+                                                        >
+                                                            {amPmOptions}
+                                                        </Field>
+                                                    </FieldWrappers>
+                                                    {errors.ampm && touched.ampm ? (
+                                                        <div className="text-red-500 text-sm mt-1">{errors.ampm}</div>
+                                                    ) : null}
+                                                </div>
+                                            </InputGroup>
+                                        </div>
+                                    )}
                                 </Wrapper>
 
                                 <div className="flex justify-between p-4">
@@ -180,7 +298,7 @@ const SendCampaign = ({
                                         Cancel
                                     </CancelBtn>
                                     <BtnWrapper>
-                                        <SubmitBtn type="submit">Blast Campaign</SubmitBtn>
+                                        <SubmitBtn type="submit">Schedule</SubmitBtn>
                                     </BtnWrapper>
                                 </div>
                             </Form>
